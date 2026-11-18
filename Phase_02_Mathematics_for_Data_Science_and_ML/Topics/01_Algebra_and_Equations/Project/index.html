@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বাস্তব ML ল্যাব: বিজ্ঞাপন বাজেট থেকে সেলস প্রেডিকশন</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --surface-subtle: #f1f5f9;
+            --accent: #2563eb;
+            --accent-light: #eff6ff;
+            --accent-border: #bfdbfe;
+            --text-main: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --border-subtle: #cbd5e1;
+            --tag-bg: #e0f2fe;
+            --tag-text: #0369a1;
+            --success-bg: #ecfdf5;
+            --success-border: #a7f3d0;
+            --success-text: #065f46;
+            --warning-bg: #fffbeb;
+            --warning-border: #fde68a;
+            --warning-text: #92400e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+            background-color: var(--bg);
+            color: var(--text-body);
+            line-height: 1.8;
+            padding: 2.5rem 1rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+        }
+
+        .nav-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.92rem;
+            padding: 0.5rem 1rem;
+            background: var(--surface);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background: var(--surface-subtle);
+            border-color: var(--border-subtle);
+        }
+
+        header {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 6px solid var(--accent);
+            border-radius: 12px;
+            padding: 2.25rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+        }
+
+        .badge-row {
+            display: flex;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        h1 {
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.85rem;
+            line-height: 1.3;
+        }
+
+        .lead {
+            font-size: 1.12rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.75rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+        }
+
+        h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid var(--surface-subtle);
+            padding-bottom: 0.65rem;
+        }
+
+        h2 .step-num {
+            background: var(--accent);
+            color: #ffffff;
+            font-size: 0.82rem;
+            font-weight: 800;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 1.25rem 0 0.5rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-body);
+            font-size: 1rem;
+        }
+
+        ul, ol {
+            margin-bottom: 1.15rem;
+            padding-left: 1.75rem;
+            color: var(--text-body);
+        }
+
+        li {
+            margin-bottom: 0.45rem;
+        }
+
+        strong {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        pre {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 1.15rem;
+            overflow-x: auto;
+            margin: 1.15rem 0;
+            font-family: "JetBrains Mono", Consolas, "Courier New", monospace;
+            font-size: 0.92rem;
+            color: #0f172a;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: "JetBrains Mono", Consolas, monospace;
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            border: 1px solid #e2e8f0;
+            font-weight: 600;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            border: none;
+            color: inherit;
+        }
+
+        .terminal-box {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 1.15rem 1.4rem;
+            border-radius: 8px;
+            font-family: "JetBrains Mono", Consolas, monospace;
+            font-size: 0.95rem;
+            margin: 1.15rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .terminal-box code {
+            background: transparent;
+            color: #38bdf8;
+            border: none;
+            padding: 0;
+            font-size: 1rem;
+        }
+
+        .terminal-box span {
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+
+        .formula-box {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 1.1rem;
+            text-align: center;
+            margin: 1rem 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .formula-sub {
+            display: block;
+            font-size: 0.88rem;
+            color: #64748b;
+            font-weight: 400;
+            margin-top: 0.35rem;
+        }
+
+        .callout {
+            border-radius: 8px;
+            padding: 1.15rem 1.35rem;
+            margin: 1.25rem 0;
+            border-left: 4px solid;
+            font-size: 0.98rem;
+        }
+
+        .callout-tip {
+            background: var(--success-bg);
+            border-color: #10b981;
+            color: var(--success-text);
+        }
+
+        .callout-info {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            color: #1e3a8a;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="nav-bar">
+        <a href="../index.html" class="nav-link">← টপিক স্টাডি গাইড (Study Guide)</a>
+        <a href="../../../../index.html" class="nav-link">🏠 মাস্টার ট্র্যাকার (Master Tracker)</a>
+    </div>
+
+    <header>
+        <div class="badge-row">
+            <span class="badge">Practical ML Lab</span>
+            <span class="badge badge-success">Phase 02 — Topic 01</span>
+            <span class="badge">NumPy & Scikit-learn</span>
+        </div>
+        <h1>বিজ্ঞাপন বাজেট থেকে সেলস প্রেডিকশন মডেল</h1>
+        <p class="lead">
+            এখানে কোনো কাঠখোট্টা গাণিতিক থিওরি নেই। আমরা একদম প্র্যাকটিক্যাল একটি মেশিন লার্নিং সমস্যা সমাধান করবো: <strong>টিভি ও সোশ্যাল মিডিয়ার বিজ্ঞাপনী খরচ থেকে পণ্যের সেলস কেমন হবে?</strong> লিনিয়ার সমীকরণের মাধ্যমে মডেলটি তৈরি করবো এবং Scikit-Learn-এর সাথে ১০০% মিলিয়ে দেখবো।
+        </p>
+    </header>
+
+    <!-- ওভারভিউ -->
+    <div class="card">
+        <h2><span class="step-num">০১</span> বাস্তব সমস্যা ও সমীকরণ</h2>
+        <p>
+            একটি কোম্পানির বিগত ১৫টি বিজ্ঞাপনী ক্যাম্পেইনের ডেটা আমাদের কাছে আছে (<code>advertising_data.json</code>)। আমরা এমন একটি সমীকরণ বের করতে চাই:
+        </p>
+
+        <div class="formula-box">
+            Sales = w₀ + (w₁ × TV) + (w₂ × Social)
+            <span class="formula-sub">w₀ = কোনো বিজ্ঞাপন না দিলে স্বাভাবিক সেলস, w₁ = TV-র প্রভাব, w₂ = Social-এর প্রভাব</span>
+        </div>
+
+        <div class="callout callout-info">
+            <strong>আপনার ওয়ার্কস্পেসের ফাইলগুলো:</strong>
+            <ul>
+                <li><code>main.py</code>: আপনার মেইন কোডিং ফাইল। এতে প্রতিটি ধাপের কমেন্ট গাইডলাইন ও টিপস দেওয়া আছে।</li>
+                <li><code>applied.py</code>: <strong>সম্পূর্ণ সমাধান করা রেফারেন্স ফাইল</strong>। প্রতিটি লাইনে সহজ বাংলায় ব্যাখ্যা দেওয়া আছে, যাতে কোথাও আটকে গেলে দেখে দেখে শিখতে পারেন।</li>
+                <li><code>advertising_data.json</code>: বিজ্ঞাপনী খরচের বাস্তব ডেটাসেট।</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ধাপ ১ ও ২ -->
+    <div class="card">
+        <h2><span class="step-num">০২</span> ধাপ ১ ও ২: ডেটা লোড ও ডিজাইন ম্যাট্রিক্স (X) তৈরি</h2>
+        <p><strong>কী করতে হবে?</strong></p>
+        <ol>
+            <li><code>advertising_data.json</code> থেকে <code>tv_budget</code>, <code>social_budget</code> এবং <code>sales</code> লোড করুন।</li>
+            <li>বেইস সেলস (w₀) পাওয়ার জন্য প্রথম কলামে সব 1 রেখে ৩টি কলাম দিয়ে ম্যাট্রিক্স <code>X</code> তৈরি করুন:</li>
+        </ol>
+
+<pre><code># কলাম ০: সব 1 (বায়াস), কলাম ১: TV, কলাম ২: Social
+X = np.column_stack([np.ones_like(tv), tv, social])
+y = sales</code></pre>
+    </div>
+
+    <!-- ধাপ ৩ -->
+    <div class="card">
+        <h2><span class="step-num">০৩</span> ধাপ ৩: সমীকরণ সমাধান করে ওয়েটস (w) বের করা</h2>
+        <p>মেশিন লার্নিং-এ লিনিয়ার রিগ্রেশন সমাধান করার বিখ্যাত <strong>Normal Equation</strong> সূত্র:</p>
+
+        <div class="formula-box">
+            w = (Xᵀ · X)⁻¹ · Xᵀ · y
+        </div>
+
+        <p>NumPy-তে এটা কোড করা মাত্র দুই লাইন:</p>
+<pre><code>XTX = X.T @ X
+XTy = X.T @ y
+w = np.linalg.solve(XTX, XTy)
+
+print(f"বেইস সেলস (w0): {w[0]:.2f}")
+print(f"টিভির প্রভাব (w1): {w[1]:.4f}")
+print(f"সোশ্যালের প্রভাব (w2): {w[2]:.4f}")</code></pre>
+    </div>
+
+    <!-- ধাপ ৪ ও ৫ -->
+    <div class="card">
+        <h2><span class="step-num">০৪</span> ধাপ ৪ ও ৫: নতুন প্রেডিকশন ও Scikit-learn-এর সাথে তুলনা</h2>
+        <p>
+            <strong>ধাপ ৪:</strong> নতুন একটি ক্যাম্পেইনে যদি টিভি বাজেট হয় $150k এবং সোশ্যাল মিডিয়া বাজেট হয় $40k, তবে সমীকরণ দিয়ে প্রেডিক্ট করুন:
+        </p>
+<pre><code>predicted_sales = w[0] + (w[1] * 150) + (w[2] * 40)
+print(f"সম্ভাব্য সেলস: ${predicted_sales:.2f}k ডলার")</code></pre>
+
+        <p>
+            <strong>ধাপ ৫:</strong> ইন্ডাস্ট্রি-স্ট্যান্ডার্ড ফ্রেমওয়ার্ক <strong>Scikit-Learn</strong> দিয়ে একই কাজ করে দেখুন:
+        </p>
+<pre><code>from sklearn.linear_model import LinearRegression
+
+features = np.column_stack([tv, social])
+model = LinearRegression().fit(features, y)
+
+print("Scikit-learn Intercept:", model.intercept_)
+print("Scikit-learn Coefs:", model.coef_)</code></pre>
+        
+        <div class="callout callout-tip">
+            <strong>মজার বিষয়:</strong> আপনি দেখবেন আপনার গণিতের সূত্রের উত্তর এবং Scikit-Learn-এর উত্তর ১০০% হুবহু এক! অর্থাৎ প্রোডাকশনে লাইব্রেরির ভেতরে ঠিক এই সমীকরণটাই চলে।
+        </div>
+    </div>
+
+    <!-- রান নির্দেশিকা -->
+    <div class="card">
+        <h2><span class="step-num">০৫</span> রান ও টেস্টের নিয়ম</h2>
+        <p>আপনার <code>main.py</code>-তে কোড করে টার্মিনালে রান করুন:</p>
+
+        <div class="terminal-box">
+            <code>python main.py</code>
+            <span>PowerShell / CMD</span>
+        </div>
+
+        <p>আর যদি সম্পূর্ণ সমাধানের আউটপুট দেখতে চান, তবে চালান:</p>
+
+        <div class="terminal-box">
+            <code>python applied.py</code>
+            <span>PowerShell / CMD</span>
+        </div>
+
+        <div class="callout callout-info" style="margin-top: 1.5rem;">
+            <strong>কাজ শেষ হলে:</strong> আপনার যখন কাজ শেষ হবে, শুধু বলবেন: <em>"Topic 1 done, generate next"</em> — আমি সাথে সাথে পরবর্তী টপিক নিয়ে আসবো!
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

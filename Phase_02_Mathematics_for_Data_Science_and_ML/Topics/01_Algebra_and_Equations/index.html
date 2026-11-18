@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topic 01: Algebra and Equations — AI ও Data Science-এর গণিত</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --surface-subtle: #f1f5f9;
+            --accent: #2563eb;
+            --accent-light: #eff6ff;
+            --accent-border: #bfdbfe;
+            --text-main: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --border-subtle: #cbd5e1;
+            --tag-bg: #e0f2fe;
+            --tag-text: #0369a1;
+            --success-bg: #ecfdf5;
+            --success-border: #a7f3d0;
+            --success-text: #065f46;
+            --warning-bg: #fffbeb;
+            --warning-border: #fde68a;
+            --warning-text: #92400e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+            background-color: var(--bg);
+            color: var(--text-body);
+            line-height: 1.8;
+            padding: 2.5rem 1rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+        }
+
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            background: var(--surface);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+        }
+        .nav-back:hover {
+            background: var(--surface-subtle);
+            border-color: var(--border-subtle);
+        }
+
+        header {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 6px solid var(--accent);
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+        }
+
+        .badge-row {
+            display: flex;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.85rem;
+            line-height: 1.3;
+        }
+
+        .lead {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* সূচিপত্র */
+        .toc {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+
+        .toc h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .toc ol {
+            padding-left: 1.25rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 0.5rem 1.5rem;
+        }
+
+        .toc a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.96rem;
+            font-weight: 500;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        /* সেকশন */
+        section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2.25rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+        }
+
+        h2 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid var(--surface-subtle);
+            padding-bottom: 0.75rem;
+        }
+
+        h2 .section-num {
+            background: var(--accent-light);
+            color: var(--accent);
+            font-size: 0.88rem;
+            font-weight: 800;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            border: 1px solid var(--accent-border);
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 1.5rem 0 0.6rem 0;
+        }
+
+        p {
+            margin-bottom: 1.15rem;
+            color: var(--text-body);
+            font-size: 1.02rem;
+        }
+
+        ul, ol {
+            margin-bottom: 1.25rem;
+            padding-left: 1.75rem;
+            color: var(--text-body);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        strong {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        /* কোড ব্লক */
+        pre {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 1.25rem;
+            overflow-x: auto;
+            margin: 1.25rem 0;
+            font-family: "JetBrains Mono", Consolas, "Courier New", monospace;
+            font-size: 0.92rem;
+            color: #0f172a;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: "JetBrains Mono", Consolas, monospace;
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            border: 1px solid #e2e8f0;
+            font-weight: 600;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            border: none;
+            color: inherit;
+        }
+
+        /* কলআউট বক্স */
+        .callout {
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+            font-size: 0.98rem;
+        }
+
+        .callout-info {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            color: #1e3a8a;
+        }
+
+        .callout-tip {
+            background: var(--success-bg);
+            border-color: #10b981;
+            color: var(--success-text);
+        }
+
+        .callout-warning {
+            background: var(--warning-bg);
+            border-color: #f59e0b;
+            color: var(--warning-text);
+        }
+
+        /* সমীকরণ কার্ড */
+        .formula-box {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+            margin: 1.25rem 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: 0.5px;
+        }
+
+        .formula-sub {
+            display: block;
+            font-size: 0.88rem;
+            color: #64748b;
+            font-weight: 400;
+            margin-top: 0.4rem;
+        }
+
+        /* প্রজেক্ট বাটন */
+        .project-cta {
+            background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+            border: 2px solid var(--accent-border);
+            border-radius: 12px;
+            padding: 2.25rem;
+            text-align: center;
+            margin-top: 2.5rem;
+        }
+
+        .project-cta h3 {
+            font-size: 1.4rem;
+            color: var(--text-main);
+            margin-bottom: 0.75rem;
+        }
+
+        .btn-action {
+            display: inline-block;
+            background: var(--accent);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.05rem;
+            padding: 0.85rem 1.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+
+        .btn-action:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="../../../index.html" class="nav-back">← ব্যাক টু মাস্টার ট্র্যাকার (Master Tracker)</a>
+
+    <header>
+        <div class="badge-row">
+            <span class="badge">Phase 02 — গণিত ও লাইব্রেরি</span>
+            <span class="badge">Topic 01</span>
+            <span class="badge">Python, NumPy & SymPy</span>
+        </div>
+        <h1>Algebra and Equations (বীজগণিত ও সমীকরণ)</h1>
+        <p class="lead">
+            Data Science এবং AI মডেলের ভেতরে জটিল অ্যালগরিদমগুলো আসলে সরল বীজগণিতীয় সমীকরণের ওপর দাঁড়িয়ে থাকে। এই গাইডে আমরা খুব সহজ বাংলায় শিখবো কীভাবে সমীকরণ দিয়ে প্রেডিকশন হয় এবং Python-এর লাইব্রেরি (NumPy ও SymPy) দিয়ে কীভাবে খুব দ্রুত ও নিখুঁতভাবে এই সমীকরণগুলো সমাধান করা যায়।
+        </p>
+    </header>
+
+    <div class="toc">
+        <h3>📖 এই টিউটোরিয়ালে যা যা শিখবো:</h3>
+        <ol>
+            <li><a href="#why-algebra">০১. AI ও Machine Learning-এ বীজগণিত কেন লাগে?</a></li>
+            <li><a href="#linear-equation">০২. Linear Equation: AI মডেলের ভিত্তি</a></li>
+            <li><a href="#system-of-equations">০৩. সমীকরণ জোট (Systems of Linear Equations): A x = b</a></li>
+            <li><a href="#sympy-symbolic">০৪. SymPy দিয়ে নির্ভুল সমাধান (Symbolic Algebra)</a></li>
+            <li><a href="#numpy-numerical">০৫. NumPy দিয়ে ফাস্ট সমাধান (Vectorized Numerical Solver)</a></li>
+            <li><a href="#normal-equation">০৬. Normal Equation: সরাসরি Linear Regression সমাধান</a></li>
+            <li><a href="#regularization">০৭. Regularization (Ridge / L2): সমীকরণ যখন আটকে যায়</a></li>
+            <li><a href="#polynomial">০৮. Polynomial Basis: বাঁকা ডেটা প্রেডিক্ট করা</a></li>
+            <li><a href="#project-prep">০৯. প্র্যাকটিক্যাল ল্যাব প্রজেক্ট গাইড</a></li>
+        </ol>
+    </div>
+
+    <!-- সেকশন ১ -->
+    <section id="why-algebra">
+        <h2><span class="section-num">০১</span> AI ও Machine Learning-এ বীজগণিত কেন লাগে?</h2>
+        <p>
+            আমরা যখন কোনো মেশিন লার্নিং মডেল বানাই—যেমন একটা বাড়ির দাম প্রেডিক্ট করা, শেয়ার বাজারের ট্রেন্ড বোঝা, অথবা কোনো রোগের ঝুঁকি নির্ণয় করা—ভেতরে কম্পিউটার কিন্তু কোনো জাদু করে না। কম্পিউটার আসলে কিছু <strong>Unknown Variables (অজানা মান বা Weights)</strong> খুঁজে বের করে, যাতে ইনপুটের সাথে গুণ ও যোগ করে সঠিক আউটপুট পাওয়া যায়।
+        </p>
+        <div class="callout callout-info">
+            <strong>সহজ কথা:</strong> মেশিন লার্নিং-এর মডেল ট্রেনিং মানে হলো এমন কিছু সমীকরণ সমাধান করা, যা আমাদের প্রেডিকশনের ভুল (Error বা Loss) একদম কমিয়ে ফেলে।
+        </div>
+        <p>
+            হাতে-কলমে সমীকরণ সমাধান করা সময়সাপেক্ষ এবং ডেটাসেটে যখন লাখ লাখ সংখ্যা থাকে তখন হাতে করা অসম্ভব। এজন্যই আমরা <strong>NumPy</strong> এবং <strong>SymPy</strong> লাইব্রেরি ব্যবহার করি, যা এক সেকেন্ডেরও কম সময়ে বিশাল সমীকরণ সিস্টেম সমাধান করে ফেলে।
+        </p>
+    </section>
+
+    <!-- সেকশন ২ -->
+    <section id="linear-equation">
+        <h2><span class="section-num">০২</span> Linear Equation: AI মডেলের ভিত্তি</h2>
+        <p>
+            আমরা স্কুলে সরলরেখার যে সমীকরণ শিখেছিলাম: <code>y = m*x + c</code>, ঠিক এই জিনিসটাই মেশিন লার্নিং-এ লেখা হয় এভাবে:
+        </p>
+        
+        <div class="formula-box">
+            y = w₁·x₁ + w₂·x₂ + ... + wₙ·xₙ + b
+            <span class="formula-sub">যেখানে x = Features (ইনপুট), w = Weights (গুরুত্ব), b = Bias (ইন্টারসেপ্ট), y = Target (আউটপুট)</span>
+        </div>
+
+        <p>
+            উদাহরণস্বরূপ, আপনি যদি বাড়ির দাম প্রেডিক্ট করতে চান:
+        </p>
+        <ul>
+            <li><code>x₁</code> = বেডরুমের সংখ্যা</li>
+            <li><code>x₂</code> = মোট স্কয়ার ফিট</li>
+            <li><code>w₁</code> ও <code>w₂</code> = এই বৈশিষ্ট্যগুলোর প্রভাব বা ওজন (Weights)</li>
+            <li><code>b</code> = বেইস মূল্য (Bias)</li>
+        </ul>
+        <p>
+            ভেক্টর আকারে এটাকে খুব সংক্ষেপে লেখা যায়: <strong>y = wᵀ · x + b</strong>।
+        </p>
+    </section>
+
+    <!-- সেকশন ৩ -->
+    <section id="system-of-equations">
+        <h2><span class="section-num">০৩</span> সমীকরণ জোট (Systems of Linear Equations): A x = b</h2>
+        <p>
+            ধরা যাক আমাদের কাছে ২টি নমুনা বা ডেটা পয়েন্ট আছে এবং অজানা মান হলো <code>x</code> ও <code>y</code>:
+        </p>
+        <div class="formula-box">
+            2x + y = 5<br>
+            x - 3y = -1
+        </div>
+        <p>
+            ম্যাট্রিক্স আকারে এটাকে আমরা বলি <strong>A · x = b</strong>:
+        </p>
+        <pre><code># ম্যাট্রিক্স A (Coefficients) এবং ভেক্টর b (Constants)
+A = [[ 2,  1],
+     [ 1, -3]]
+
+b = [ 5, -1]</code></pre>
+        <p>
+            এখানে <code>x = 2</code> এবং <code>y = 1</code> বসালে দুটি সমীকরণই হুবহু মিলে যায়। হাজার হাজার ডেটা রো থাকলেও এই একই নিয়ম খাটে।
+        </p>
+    </section>
+
+    <!-- সেকশন ৪ -->
+    <section id="sympy-symbolic">
+        <h2><span class="section-num">০৪</span> SymPy দিয়ে নির্ভুল সমাধান (Symbolic Algebra)</h2>
+        <p>
+            <strong>SymPy</strong> হলো পাইথনের একটা চমৎকার লাইব্রেরি যা কোনো দশমিক গোলমাল ছাড়াই বীজগণিতীয় সমীকরণ প্রতীকীভাবে (Symbolically) একদম হুবহু সমাধান করতে পারে:
+        </p>
+
+<pre><code>import sympy as sp
+
+# ১. ভেরিয়েবল ডিফাইন করা
+x, y = sp.symbols('x y')
+
+# ২. সমীকরণ তৈরি করা
+eq1 = sp.Eq(2*x + y, 5)
+eq2 = sp.Eq(x - 3*y, -1)
+
+# ৩. সমাধান করা
+solution = sp.solve((eq1, eq2), (x, y))
+print(solution)  # আউটপুট: {x: 2, y: 1}</code></pre>
+
+        <div class="callout callout-tip">
+            <strong>কোথায় কাজে লাগে?</strong> যখন আমরা জটিল Loss Function-এর ডেরিভেটিভ বের করতে চাই বা কোনো তাত্ত্বিক সমীকরণের নিখুঁত মান চাই, তখন SymPy অপ্রতিদ্বন্দ্বী।
+        </div>
+    </section>
+
+    <!-- সেকশন ৫ -->
+    <section id="numpy-numerical">
+        <h2><span class="section-num">০৫</span> NumPy দিয়ে ফাস্ট সমাধান (Vectorized Numerical Solver)</h2>
+        <p>
+            যখন ডেটাসেট বড় হয়, তখন আমাদের প্রয়োজন বিদ্যুৎগতির গণনা। এর জন্য আমরা ব্যবহার করি <strong>NumPy</strong>-এর লিনিয়ার অ্যালজেব্রা মডিউল <code>np.linalg.solve</code>:
+        </p>
+
+<pre><code>import numpy as np
+
+# ১. কো-এফিশিয়েন্ট ম্যাট্রিক্স A এবং টার্গেট ভেক্টর b
+A = np.array([[2.0,  1.0],
+              [1.0, -3.0]])
+
+b = np.array([5.0, -1.0])
+
+# ২. সরাসরি সমাধান
+x_solution = np.linalg.solve(A, b)
+print("সমাধান:", x_solution)  # [2. 1.]
+
+# ৩. কন্ডিশন নাম্বার (Condition Number) চেক করা
+cond = np.linalg.cond(A)
+print("Condition Number:", cond)  # 1.45 (যত ছোট, সিস্টেম তত বেশি স্থিতিশীল)</code></pre>
+
+        <div class="callout callout-warning">
+            <strong>সতর্কতা (Singular Matrix):</strong> যদি সমীকরণের দুইটা সারি একই রকম বা পরষ্পর নির্ভরশীল হয় (যেমন <code>2x + y = 5</code> এবং <code>4x + 2y = 10</code>), তবে ম্যাট্রিক্সটির ডিটারমিন্যান্ট শূন্য হয়ে যায়। একে <strong>Singular Matrix</strong> বলে এবং এর কোনো একক সমাধান থাকে না।
+        </div>
+    </section>
+
+    <!-- সেকশন ৬ -->
+    <section id="normal-equation">
+        <h2><span class="section-num">০৬</span> Normal Equation: সরাসরি Linear Regression সমাধান</h2>
+        <p>
+            মেশিন লার্নিং-এ গ্রেডিয়েন্ট ডিসেন্ট চালিয়ে লুপের পর লুপ না ঘুরে, বীজগণিত ব্যবহার করে <strong>এক ক্লিকেই সেরা ওজনের মান (Optimal Weights)</strong> বের করার বিখ্যাত সূত্রের নাম <strong>Normal Equation</strong>:
+        </p>
+
+        <div class="formula-box">
+            w = (Xᵀ · X)⁻¹ · Xᵀ · y
+            <span class="formula-sub">X = ডেটা ম্যাট্রিক্স, y = আসল টার্গেট ভ্যালু, w = সেরা মডেল ওয়েটস</span>
+        </div>
+
+        <p>
+            NumPy-তে এটা কোড করা খুবই সহজ:
+        </p>
+<pre><code># X এর সাইজ (N, D), y এর সাইজ (N,)
+XTX = X.T @ X
+XTy = X.T @ y
+
+# সমাধান: (X^T * X) * w = X^T * y
+weights = np.linalg.solve(XTX, XTy)</code></pre>
+        <p>
+            এই একটা লাইনেই আপনার সম্পূর্ণ Linear Regression মডেল ট্রেন হয়ে গেল!
+        </p>
+    </section>
+
+    <!-- সেকশন ৭ -->
+    <section id="regularization">
+        <h2><span class="section-num">০৭</span> Regularization (Ridge / L2): সমীকরণ যখন আটকে যায়</h2>
+        <p>
+            বাস্তব ডেটাতে অনেক সময় দুইটা কলাম প্রায় এক রকম হয়ে যায় (Collinear Features)। তখন <code>Xᵀ · X</code> ইনভার্ট করা যায় না বা ওয়েটগুলো অস্বাভাবিক বড় হয়ে মডেল ওভারফিট করে।
+        </p>
+        <p>
+            সমাধান কী? আমরা সমীকরণের সাথে সামান্য একটু পেনাল্টি বা রেগুলারাইজেশন (λ·I) যোগ করে দিই। একে বলে <strong>Ridge Regularization</strong>:
+        </p>
+
+        <div class="formula-box">
+            w = (Xᵀ · X + λ · I)⁻¹ · Xᵀ · y
+            <span class="formula-sub">λ (Lambda) হলো রেগুলারাইজেশন স্ট্রেংথ, I হলো Identity Matrix</span>
+        </div>
+
+<pre><code># Ridge সমীকরণ সমাধান
+lambda_reg = 0.1
+I = np.eye(X.shape[1])  # Identity Matrix
+
+weights_ridge = np.linalg.solve(XTX + lambda_reg * I, XTy)</code></pre>
+        <p>
+            এর ফলে সমীকরণ কখনোই ক্র্যাশ করে না এবং মডেল অনেক বেশি নিখুঁত ও স্থিতিশীল প্রেডিকশন দেয়।
+        </p>
+    </section>
+
+    <!-- সেকশন ৮ -->
+    <section id="polynomial">
+        <h2><span class="section-num">০৮</span> Polynomial Basis: বাঁকা ডেটা প্রেডিক্ট করা</h2>
+        <p>
+            বাস্তবের ডেটা সবসময় সোজা লাইনে চলে না—অনেক ডেটা বক্ররেখা (Curved) আকারে থাকে। লিনিয়ার ইকুয়েশন দিয়েই কি বাঁকা লাইন প্রেডিক্ট করা সম্ভব?
+        </p>
+        <p>
+            <strong>হ্যাঁ!</strong> ট্রিকটা হলো—ইনপুট <code>x</code> কে স্কয়ার ও কিউব করে বাড়তি কলাম বানিয়ে নেওয়া:
+        </p>
+        <div class="formula-box">
+            x ➔ [ 1,  x,  x²,  x³ ]
+        </div>
+        <p>
+            মডেলের সমীকরণ তখন দেখতে এমন হয়: <code>y = w₀ + w₁·x + w₂·x²</code>। এটা সমীকরণের দিক থেকে লিনিয়ার কিন্তু গ্রাফের দিক থেকে সুন্দর প্যারাবোলা বা বক্ররেখা!
+        </p>
+<pre><code># একটি ইনপুট x কে পলিনমিয়াল ম্যাট্রিক্সে রূপান্তর করা
+def generate_polynomial_basis(x, degree=2):
+    # [1, x, x^2]
+    return np.column_stack([x**i for i in range(degree + 1)])</code></pre>
+    </section>
+
+    <!-- সেকশন ৯ -->
+    <section id="project-prep" class="project-cta">
+        <h3>🚀 এবার প্র্যাকটিক্যাল কোডিং করার পালা!</h3>
+        <p>
+            আমরা শিখে ফেললাম কীভাবে SymPy এবং NumPy দিয়ে সমীকরণ সিস্টেম এবং Normal Equation সমাধান করা যায়। এবার ল্যাবে গিয়ে <strong>Computational Algebra Engine</strong> তৈরি করে নিজের হাতে কোড যাচাই করুন।
+        </p>
+        <a href="./Project/index.html" class="btn-action">প্রজেক্ট ল্যাব গাইড খুলুন (Project Workspace) →</a>
+    </section>
+</div>
+
+</body>
+</html>

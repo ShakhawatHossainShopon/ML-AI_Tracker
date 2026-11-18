@@ -1,0 +1,17 @@
+[
+  {"campaign_id": 1, "tv_budget": 230.1, "social_budget": 37.8, "sales": 22.1},
+  {"campaign_id": 2, "tv_budget": 44.5, "social_budget": 39.3, "sales": 10.4},
+  {"campaign_id": 3, "tv_budget": 17.2, "social_budget": 45.9, "sales": 9.3},
+  {"campaign_id": 4, "tv_budget": 151.5, "social_budget": 41.3, "sales": 18.5},
+  {"campaign_id": 5, "tv_budget": 180.8, "social_budget": 10.8, "sales": 12.9},
+  {"campaign_id": 6, "tv_budget": 8.7, "social_budget": 48.9, "sales": 7.2},
+  {"campaign_id": 7, "tv_budget": 57.5, "social_budget": 32.8, "sales": 11.8},
+  {"campaign_id": 8, "tv_budget": 120.2, "social_budget": 19.6, "sales": 13.2},
+  {"campaign_id": 9, "tv_budget": 8.6, "social_budget": 2.1, "sales": 4.8},
+  {"campaign_id": 10, "tv_budget": 199.8, "social_budget": 2.6, "sales": 10.6},
+  {"campaign_id": 11, "tv_budget": 66.1, "social_budget": 5.8, "sales": 8.6},
+  {"campaign_id": 12, "tv_budget": 214.7, "social_budget": 24.0, "sales": 17.4},
+  {"campaign_id": 13, "tv_budget": 23.8, "social_budget": 35.1, "sales": 9.2},
+  {"campaign_id": 14, "tv_budget": 97.5, "social_budget": 7.6, "sales": 9.7},
+  {"campaign_id": 15, "tv_budget": 204.3, "social_budget": 32.9, "sales": 19.0}
+]

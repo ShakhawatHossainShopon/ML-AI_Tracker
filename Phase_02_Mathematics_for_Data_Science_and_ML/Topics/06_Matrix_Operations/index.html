@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>টপিক ০৬: ম্যাট্রিক্স অপারেশন (Matrix Operations)</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --surface-subtle: #f1f5f9;
+            --accent: #2563eb;
+            --accent-light: #eff6ff;
+            --accent-border: #bfdbfe;
+            --text-main: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --border-subtle: #cbd5e1;
+            --tag-bg: #e0f2fe;
+            --tag-text: #0369a1;
+            --success-bg: #ecfdf5;
+            --success-border: #a7f3d0;
+            --success-text: #065f46;
+            --warning-bg: #fffbeb;
+            --warning-border: #fde68a;
+            --warning-text: #92400e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+            background-color: var(--bg);
+            color: var(--text-body);
+            line-height: 1.8;
+            padding: 2.5rem 1rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .nav-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.92rem;
+            padding: 0.5rem 1rem;
+            background: var(--surface);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background: var(--surface-subtle);
+            border-color: var(--border-subtle);
+        }
+
+        header {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 6px solid var(--accent);
+            border-radius: 12px;
+            padding: 2.25rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+        }
+
+        .badge-row {
+            display: flex;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        h1 {
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.85rem;
+            line-height: 1.3;
+        }
+
+        .lead {
+            font-size: 1.12rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.75rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid var(--surface-subtle);
+            padding-bottom: 0.65rem;
+        }
+
+        h2 .section-num {
+            background: var(--accent);
+            color: #ffffff;
+            font-size: 0.85rem;
+            font-weight: 800;
+            padding: 0.2rem 0.65rem;
+            border-radius: 6px;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 1.5rem 0 0.65rem 0;
+        }
+
+        p {
+            margin-bottom: 1.1rem;
+            color: var(--text-body);
+            font-size: 1.02rem;
+        }
+
+        ul, ol {
+            margin-bottom: 1.25rem;
+            padding-left: 1.75rem;
+            color: var(--text-body);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        strong {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        pre {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 1.15rem;
+            overflow-x: auto;
+            margin: 1.15rem 0;
+            font-family: "JetBrains Mono", Consolas, "Courier New", monospace;
+            font-size: 0.92rem;
+            color: #0f172a;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: "JetBrains Mono", Consolas, monospace;
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            border: 1px solid #e2e8f0;
+            font-weight: 600;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            border: none;
+            color: inherit;
+        }
+
+        .callout {
+            border-radius: 8px;
+            padding: 1.15rem 1.35rem;
+            margin: 1.25rem 0;
+            border-left: 4px solid;
+            font-size: 0.98rem;
+        }
+
+        .callout-tip {
+            background: var(--success-bg);
+            border-color: #10b981;
+            color: var(--success-text);
+        }
+
+        .callout-info {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            color: #1e3a8a;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.25rem 0;
+            font-size: 0.95rem;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: var(--surface-subtle);
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .project-cta {
+            background: #ffffff;
+            border: 2px dashed var(--accent);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .project-cta h3 {
+            margin-top: 0;
+            color: var(--accent);
+            font-size: 1.35rem;
+        }
+
+        .btn-action {
+            display: inline-block;
+            background: var(--accent);
+            color: #ffffff;
+            font-weight: 700;
+            padding: 0.85rem 1.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: background 0.2s;
+        }
+
+        .btn-action:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="nav-bar">
+        <a href="../../index.html" class="nav-link">🏠 মাস্টার সিলেবাস (Master Syllabus)</a>
+        <a href="../05_Vectors_and_Matrices/index.html" class="nav-link">← পূর্ববর্তী: ভেক্টর ও ম্যাট্রিক্স</a>
+    </div>
+
+    <header>
+        <div class="badge-row">
+            <span class="badge">Phase 02: Mathematics</span>
+            <span class="badge badge-success">Topic 06</span>
+            <span class="badge">Programmer's Intuition</span>
+        </div>
+        <h1>ম্যাট্রিক্স অপারেশন (Matrix Operations)</h1>
+        <p class="lead">
+            ম্যাথের কোনো জটিল সূত্র মুখস্থ করার দরকার নেই! একজন প্রোগ্রামার হিসেবে বুঝুন: টেবিলের ডেটা যোগ-বিয়োগ করা, সব ডেটাতে একবারে ট্যাক্স বা ডিসকাউন্ট বসানো, এবং টেবিল উল্টানো (Transpose) কীভাবে হয়।
+        </p>
+    </header>
+
+    <!-- সেকশন ১ -->
+    <section id="why-operations">
+        <h2><span class="section-num">০১</span> প্রোগ্রামারের চোখে ম্যাট্রিক্স অপারেশন কী?</h2>
+        <p>
+            আগের টপিকে আমরা দেখেছি ম্যাট্রিক্স মানে আসলে একটি <strong>২D ডেটা টেবিল</strong> (Rows এবং Columns)।
+        </p>
+        <p>
+            বাস্তব জীবনে প্রোগ্রামিং করার সময় আমাদের প্রায়ই এই টেবিলগুলোর সাথে বিভিন্ন কাজ করতে হয়:
+        </p>
+        <ul>
+            <li><strong>দুটো শাখা বা ব্রাঞ্চের টেবিল যোগ করা:</strong> ধানমন্ডি ব্রাঞ্চের বিক্রয় + গুলশান ব্রাঞ্চের বিক্রয় = মোট বিক্রয়।</li>
+            <li><strong>এক ক্লিকে পুরো টেবিলের দাম আপডেট করা:</strong> সব পণ্যে ১৫% ভ্যাট যোগ করা বা ১০% ছাড় দেওয়া।</li>
+            <li><strong>টেবিল উল্টে দেখা (Transpose):</strong> রো-গুলোকে কলাম এবং কলামগুলোকে রো বানিয়ে নতুনভাবে সাজানো।</li>
+        </ul>
+    </section>
+
+    <!-- সেকশন ২ -->
+    <section id="addition-subtraction">
+        <h2><span class="section-num">০২</span> ম্যাট্রিক্স যোগ ও বিয়োগ (Element-wise Addition)</h2>
+        <p>
+            খুব সহজ নিয়ম: <strong>একই পজিশনের সেল একই পজিশনের সেলের সাথেই যোগ হবে।</strong>
+        </p>
+        <p>
+            ধরুন আপনার দুটি ব্রাঞ্চে ৩টি পণ্যের জানুয়ারি ও ফেব্রুয়ারি মাসের বিক্রয় ডেটা আছে:
+        </p>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>পণ্য</th>
+                    <th>ব্রাঞ্চ A (জানু, ফেব)</th>
+                    <th>ব্রাঞ্চ B (জানু, ফেব)</th>
+                    <th>মোট বিক্রয় (A + B)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Laptop</td>
+                    <td>[10, 15]</td>
+                    <td>[5, 8]</td>
+                    <td>[15, 23] (10+5, 15+8)</td>
+                </tr>
+                <tr>
+                    <td>Phone</td>
+                    <td>[20, 25]</td>
+                    <td>[12, 10]</td>
+                    <td>[32, 35] (20+12, 25+10)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="callout callout-tip">
+            <strong>প্রোগ্রামারের সোনালী নিয়ম:</strong> দুটি ম্যাট্রিক্স যোগ বা বিয়োগ করতে হলে তাদের <strong>Shape (সারি ও কলামের সংখ্যা) হুবহু এক হতে হবে</strong>। অন্যথায় এরর আসবে।
+        </div>
+
+<pre><code>import numpy as np
+
+branch_a = np.array([
+    [10, 15],
+    [20, 25]
+])
+
+branch_b = np.array([
+    [5, 8],
+    [12, 10]
+])
+
+total_sales = branch_a + branch_b
+print(total_sales)
+# আউটপুট:
+# [[15 23]
+#  [32 35]]</code></pre>
+    </section>
+
+    <!-- সেকশন ৩ -->
+    <section id="scalar-math">
+        <h2><span class="section-num">০৩</span> স্কেলার অপারেশন (Scalar Operations / Broadcasting)</h2>
+        <p>
+            "Scalar" (স্কেলার) মানে সাধারণ একটি একক সংখ্যা (যেমন: <code>5</code>, <code>1.15</code>, <code>0.10</code>)।
+        </p>
+        <p>
+            সাধারণ পাইথনে নেস্টেড লুপ চালিয়ে পুরো লিস্টের প্রতিটি উপাদানকে গুণ করতে হতো। কিন্তু ম্যাট্রিক্সে সরাসরি একটি সংখ্যা দিয়ে গুণ বা যোগ করলে তা স্বয়ংক্রিয়ভাবে পুরো টেবিলের প্রতিটি সেলে অ্যাপ্লাই হয়ে যায়!
+        </p>
+
+<pre><code>prices = np.array([
+    [100, 200],
+    [300, 400]
+])
+
+# সব পণ্যে ১৫% ভ্যাট যোগ করতে ১.১৫ দিয়ে গুণ:
+prices_with_tax = prices * 1.15
+print(prices_with_tax)
+# আউটপুট:
+# [[115. 230.]
+#  [345. 460.]]</code></pre>
+
+        <div class="callout callout-info">
+            <strong>মেশিন লার্নিংয়ে এর ব্যবহার:</strong> ইমেজ প্রসেসিংয়ে যখন একটি ছবির উজ্জ্বলতা (Brightness) বাড়ানো হয়, তখন ছবির পিক্সেল টেবিলের সব মানে একটি নির্দিষ্ট সংখ্যা যোগ করা হয়।
+        </div>
+    </section>
+
+    <!-- সেকশন ৪ -->
+    <section id="transpose">
+        <h2><span class="section-num">০৪</span> ট্রান্সপোজ (Transpose): টেবিল উল্টানো</h2>
+        <p>
+            এক্সেল ফাইলে যেমন "Paste Transpose" অপশন থাকে, ঠিক তেমনি প্রোগ্রামিংয়ে <code>matrix.T</code> দিলে টেবিলটির <strong>Row হয়ে যায় Column</strong>, আর <strong>Column হয়ে যায় Row</strong>!
+        </p>
+        <ul>
+            <li>যদি কোনো টেবিলের আকার হয় <code>(2, 3)</code> (২টি সারি, ৩টি কলাম),</li>
+            <li>ট্রান্সপোজ করার পর আকার হবে <code>(3, 2)</code> (৩টি সারি, ২টি কলাম)।</li>
+        </ul>
+
+<pre><code>table = np.array([
+    [10, 20, 30],
+    [40, 50, 60]
+])
+print("আসল শেপ:", table.shape)  # (2, 3)
+
+transposed_table = table.T
+print("উল্টানোর পর শেপ:", transposed_table.shape)  # (3, 2)
+print(transposed_table)
+# আউটপুট:
+# [[10 40]
+#  [20 50]
+#  [30 60]]</code></pre>
+    </section>
+
+    <!-- সেকশন ৫: ল্যাব প্রিভিউ -->
+    <section id="project-prep" class="project-cta">
+        <h3>🚀 এবার ল্যাবে কোড রান করে টেস্ট করার পালা!</h3>
+        <p>
+            আমরা <code>main.py</code>-তে তৈরি করব <strong>Store Price & Tax Manager</strong>। কোনো কঠিন ম্যাথ নয়, পরিষ্কার ৩টি ধাপে কোড রান করে আউটপুট দেখে নেবেন।
+        </p>
+        <a href="./Project/index.html" class="btn-action">প্রজেক্ট ল্যাব গাইড খুলুন →</a>
+    </section>
+</div>
+
+</body>
+</html>
