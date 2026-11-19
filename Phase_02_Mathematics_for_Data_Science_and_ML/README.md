@@ -9,11 +9,11 @@
 - [x] [Matrix operations](./Topics/06_Matrix_Operations/index.html)
 - [x] [Dot products and matrix multiplication](./Topics/07_Dot_Products_and_Matrix_Multiplication/index.html)
 - [ ] [Eigenvalues and eigenvectors](./Topics/08_Eigenvalues_and_Eigenvectors/index.html)
-- [ ] Derivatives and differentiation
-- [ ] Partial derivatives
-- [ ] Integration
-- [ ] Gradients and optimization
-- [ ] Gradient descent
+- [ ] [Derivatives and differentiation](./Topics/09_Derivatives_and_Differentiation/index.html)
+- [ ] [Partial derivatives](./Topics/10_Partial_Derivatives/index.html)
+- [ ] [Integration](./Topics/11_Integration/index.html)
+- [ ] [Gradients and optimization](./Topics/12_Gradients_and_Optimization/index.html)
+- [ ] [Gradient descent](./Topics/13_Gradient_Descent/index.html)
 
 ## 🚀 Capstone Project in this Phase
 - [Project_03_Build_a_simple_Gradient_Descent_Optimize](./Projects/Project_03_Build_a_simple_Gradient_Descent_Optimize/): **AI Capstone:** Build a simple Gradient Descent Optimizer

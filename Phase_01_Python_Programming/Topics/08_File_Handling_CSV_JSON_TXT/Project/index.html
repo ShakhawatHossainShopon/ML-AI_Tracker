@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>প্রজেক্ট ব্রেকডাউন: ফাইল হ্যান্ডলিং: CSV, JSON, TXT (File I/O)</title>
+    <style>
+:root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-subtle: #f1f5f9;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --text-main: #0f172a;
+    --text-body: #334155;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --tag-bg: #e0f2fe;
+    --tag-text: #0369a1;
+    --success-bg: #ecfdf5;
+    --success-text: #065f46;
+    --code-bg: #090d16;
+    --code-text: #f8fafc;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+    background-color: var(--bg);
+    color: var(--text-body);
+    line-height: 1.55;
+    padding: 0.75rem 0.6rem;
+    font-size: 0.88rem;
+    -webkit-font-smoothing: antialiased;
+}
+.container {
+    max-width: 720px;
+    margin: 0 auto;
+}
+.nav-bar {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.76rem;
+    padding: 0.3rem 0.55rem;
+    background: var(--surface);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+}
+header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.85rem;
+}
+.badge-row {
+    display: flex;
+    gap: 0.35rem;
+    margin-bottom: 0.4rem;
+    flex-wrap: wrap;
+}
+.badge {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.12rem 0.45rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+.badge-success {
+    background: var(--success-bg);
+    color: var(--success-text);
+}
+h1 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.3rem;
+    line-height: 1.25;
+}
+.lead {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+}
+.card, section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.85rem;
+}
+h2 {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-bottom: 1px solid var(--surface-subtle);
+    padding-bottom: 0.35rem;
+}
+h2 .step-num, h2 .section-num {
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 0.12rem 0.4rem;
+    border-radius: 4px;
+}
+p {
+    margin-bottom: 0.6rem;
+    color: var(--text-body);
+    font-size: 0.84rem;
+    line-height: 1.5;
+}
+ul, ol {
+    margin-bottom: 0.6rem;
+    padding-left: 1.15rem;
+    color: var(--text-body);
+    font-size: 0.82rem;
+}
+li {
+    margin-bottom: 0.25rem;
+}
+strong {
+    color: var(--text-main);
+    font-weight: 700;
+}
+.code-container {
+    margin: 0.55rem 0;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #1e293b;
+}
+.code-header {
+    background: #1e293b;
+    color: #94a3b8;
+    padding: 0.25rem 0.55rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.65rem 0.75rem;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.74rem;
+    line-height: 1.45;
+    margin: 0;
+}
+code {
+    font-family: "JetBrains Mono", Consolas, monospace;
+    background: #f1f5f9;
+    color: #0f172a;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.76rem;
+}
+pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+.terminal-box {
+    background: #050811;
+    border: 1px solid #1e293b;
+    border-left: 3px solid #10b981;
+    border-radius: 6px;
+    padding: 0.55rem 0.75rem;
+    margin: 0.55rem 0;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.73rem;
+    color: #38bdf8;
+    overflow-x: auto;
+    line-height: 1.4;
+}
+.terminal-box .term-title {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 0.65rem;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+}
+.breakdown-box {
+    background: var(--surface-subtle);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+    padding: 0.7rem 0.85rem;
+    margin: 0.55rem 0;
+}
+.breakdown-box h4 {
+    color: var(--text-main);
+    font-size: 0.82rem;
+    margin-bottom: 0.35rem;
+    font-weight: 700;
+}
+.breakdown-item {
+    font-size: 0.78rem;
+    margin-bottom: 0.45rem;
+    padding-bottom: 0.45rem;
+    border-bottom: 1px dashed var(--border);
+    line-height: 1.45;
+}
+.breakdown-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.breakdown-item code {
+    background: #e2e8f0;
+    color: #0f172a;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.74rem;
+    font-weight: 600;
+}
+.callout {
+    border-radius: 6px;
+    padding: 0.65rem 0.85rem;
+    margin: 0.65rem 0;
+    border-left: 3px solid #10b981;
+    background: var(--success-bg);
+    color: var(--success-text);
+    font-size: 0.78rem;
+    line-height: 1.45;
+}
+.project-cta {
+    background: #ffffff;
+    border: 2px dashed var(--accent);
+    border-radius: 8px;
+    padding: 1.15rem;
+    text-align: center;
+    margin-top: 1.15rem;
+}
+.btn-action {
+    display: inline-block;
+    background: var(--accent);
+    color: #ffffff;
+    font-weight: 700;
+    padding: 0.65rem 1.25rem;
+    border-radius: 6px;
+    text-decoration: none;
+    margin-top: 0.65rem;
+    font-size: 0.82rem;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="nav-bar">
+        <a href="../index.html" class="nav-link">← স্টাডি গাইড</a>
+        <a href="../../../../index.html" class="nav-link">🏠 মাস্টার ট্র্যাকার</a>
+    </div>
+    <header>
+        <div class="badge-row">
+            <span class="badge">Project Breakdown</span>
+            <span class="badge badge-success">Phase 01 — Topic 08</span>
+            <span class="badge">Mobile View</span>
+        </div>
+        <h1>অ্যাপ কনফিগ ও ইউজার অডিট ম্যানেজার (Config & Log Exporter)</h1>
+        <p class="lead">JSON কনফিগারেশন তৈরি, টেক্সট ফাইলে লগ সংরক্ষণ ও ডাটা পার্সিং।</p>
+    </header>
+    
+    <div class="card">
+        <h2><span class="step-num">০১</span> ধাপ ০১: JSON ডেটা স্ট্রিংয়ে রূপান্তর ও রিড করা</h2>
+        <p>ডিকশনারিকে JSON ফরম্যাটে রূপান্তর ও রিড করা:</p>
+        <div class="code-container">
+            <div class="code-header">Python</div>
+<pre><code>import json
+
+config = {'app_name': 'AITracker', 'version': 1.0, 'debug': True}
+json_str = json.dumps(config, indent=2)
+print('JSON Encoded String:\n', json_str)
+
+parsed_back = json.loads(json_str)
+print('Parsed App Name:', parsed_back['app_name'])</code></pre>
+        </div>
+        <div class="terminal-box">
+            <div class="term-title">🖥️ Terminal Output</div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>$ python -c "..."
+JSON Encoded String:
+{
+  "app_name": "AITracker",
+  "version": 1.0,
+  "debug": true
+}
+Parsed App Name: AITracker</code></pre>
+        </div>
+        <div class="breakdown-box">
+            <h4>🔍 কোড ব্রেকডাউন:</h4>
+            
+            <div class="breakdown-item">
+                <code>json.dumps</code>: পাইথন অবজেক্টকে JSON স্ট্রিং বানায়।
+            </div>
+            <div class="breakdown-item">
+                <code>json.loads</code>: JSON স্ট্রিংকে পাইথন ডিকশনারি বানায়।
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2><span class="step-num">০২</span> ধাপ ০২: টেক্সট ফাইলে অডিট লগ তৈরি (মেমরি সিমুলেশন)</h2>
+        <p>লগ মেসেজ টেক্সট লাইনে ফরম্যাট করা:</p>
+        <div class="code-container">
+            <div class="code-header">Python</div>
+<pre><code>logs = ['[INFO] System started', '[AUTH] User login: admin', '[WARN] Low disk space']
+log_content = '\n'.join(logs)
+print('Formatted Log File Content:\n' + log_content)</code></pre>
+        </div>
+        <div class="terminal-box">
+            <div class="term-title">🖥️ Terminal Output</div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>$ python -c "..."
+Formatted Log File Content:
+[INFO] System started
+[AUTH] User login: admin
+[WARN] Low disk space</code></pre>
+        </div>
+        <div class="breakdown-box">
+            <h4>🔍 কোড ব্রেকডাউন:</h4>
+            
+            <div class="breakdown-item">
+                <code>join(logs)</code>: প্রতিটি লগ এন্ট্রিকে নতুন লাইনে যুক্ত করেছে।
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2><span class="step-num">০৩</span> ধাপ ০৩: CSV টেবিল পার্সিং</h2>
+        <p>কমা-সেপারেটেড টেক্সট লাইনকে পাইথন ডিকশনারি লিস্টে রূপান্তর:</p>
+        <div class="code-container">
+            <div class="code-header">Python</div>
+<pre><code>csv_data = 'name,role\nRahim,Admin\nKarim,Editor'
+lines = csv_data.split('\n')
+headers = lines[0].split(',')
+rows = [dict(zip(headers, l.split(','))) for l in lines[1:]]
+print('Parsed CSV Rows:', rows)</code></pre>
+        </div>
+        <div class="terminal-box">
+            <div class="term-title">🖥️ Terminal Output</div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>$ python -c "..."
+Parsed CSV Rows: [{'name': 'Rahim', 'role': 'Admin'}, {'name': 'Karim', 'role': 'Editor'}]</code></pre>
+        </div>
+        <div class="breakdown-box">
+            <h4>🔍 কোড ব্রেকডাউন:</h4>
+            
+            <div class="breakdown-item">
+                <code>zip(headers, ...)</code>: কলাম হেডার ও ডেটাকে মিলিয়ে ডিকশনারি বানিয়েছে।
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <h2><span class="step-num">০৪</span> সম্পূর্ণ কার্যকর কোড (Full Script)</h2>
+        <div class="code-container">
+            <div class="code-header">full_code.py</div>
+<pre><code>import json
+d = {'model': 'linear_reg', 'acc': 0.94}
+print('JSON:', json.dumps(d))</code></pre>
+        </div>
+        <div class="terminal-box">
+            <div class="term-title">🖥️ Full Terminal Run</div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>JSON: {"model": "linear_reg", "acc": 0.94}</code></pre>
+        </div>
+        <div class="callout">
+            <strong>🎯 মোবাইলে মনে রাখার সারমর্ম:</strong><br>
+            • ফাইলে কাজ করতে সবসময় with open() ব্যবহার করবেন。<br>• json.loads / json.dumps ডেটা আদান-প্রদানের সেতু。<br>• CSV হলো ডেটা সায়েন্সের সবচেয়ে সাধারণ ফাইল ফরম্যাট।
+        </div>
+    </div>
+</div>
+</body>
+</html>
