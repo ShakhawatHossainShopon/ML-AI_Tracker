@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "AI & ML Learning Journey Tracker with MongoDB Sync",
   "scripts": {
-    "build": "echo 'No build required'",
     "start": "node server.js"
   },
   "dependencies": {
