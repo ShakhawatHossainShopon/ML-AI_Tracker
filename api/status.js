@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
     const db = client.db('ai_tracker');
     const collection = db.collection('status');
 
-    if (req.method === 'GET') {
+    if (req.method === 'GET' || req.method === 'HEAD') {
       const doc = await collection.findOne({ _id: 'master_status' });
       return res.status(200).json({ success: true, data: doc ? doc.state : {} });
     }
