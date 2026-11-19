@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>প্রজেক্ট ব্রেকডাউন: আইগেনভ্যালু ও আইগেনভেক্টর</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --surface-subtle: #f1f5f9;
+            --accent: #2563eb;
+            --accent-light: #eff6ff;
+            --text-main: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --tag-bg: #e0f2fe;
+            --tag-text: #0369a1;
+            --success-bg: #ecfdf5;
+            --success-text: #065f46;
+            --code-bg: #090d16;
+            --code-text: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+            background-color: var(--bg);
+            color: var(--text-body);
+            line-height: 1.55;
+            padding: 0.75rem 0.6rem;
+            font-size: 0.88rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .nav-bar {
+            display: flex;
+            gap: 0.4rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.76rem;
+            padding: 0.3rem 0.55rem;
+            background: var(--surface);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        header {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .badge-row {
+            display: flex;
+            gap: 0.35rem;
+            margin-bottom: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 0.12rem 0.45rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.3rem;
+            line-height: 1.25;
+        }
+
+        .lead {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+            margin-bottom: 0.85rem;
+        }
+
+        h2 {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            border-bottom: 1px solid var(--surface-subtle);
+            padding-bottom: 0.35rem;
+        }
+
+        h2 .step-num {
+            background: var(--accent);
+            color: #ffffff;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 0.12rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        p {
+            margin-bottom: 0.6rem;
+            color: var(--text-body);
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+
+        ul, ol {
+            margin-bottom: 0.6rem;
+            padding-left: 1.15rem;
+            color: var(--text-body);
+            font-size: 0.82rem;
+        }
+
+        li {
+            margin-bottom: 0.25rem;
+        }
+
+        strong {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .code-container {
+            margin: 0.55rem 0;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #1e293b;
+        }
+
+        .code-header {
+            background: #1e293b;
+            color: #94a3b8;
+            padding: 0.25rem 0.55rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 0.65rem 0.75rem;
+            overflow-x: auto;
+            font-family: "JetBrains Mono", Consolas, monospace;
+            font-size: 0.74rem;
+            line-height: 1.45;
+            margin: 0;
+        }
+
+        code {
+            font-family: "JetBrains Mono", Consolas, monospace;
+        }
+
+        .terminal-box {
+            background: #050811;
+            border: 1px solid #1e293b;
+            border-left: 3px solid #10b981;
+            border-radius: 6px;
+            padding: 0.55rem 0.75rem;
+            margin: 0.55rem 0;
+            font-family: "JetBrains Mono", Consolas, monospace;
+            font-size: 0.73rem;
+            color: #38bdf8;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+
+        .terminal-box .term-title {
+            color: #10b981;
+            font-weight: bold;
+            font-size: 0.65rem;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+        }
+
+        .breakdown-box {
+            background: var(--surface-subtle);
+            border-radius: 6px;
+            border-left: 3px solid var(--accent);
+            padding: 0.7rem 0.85rem;
+            margin: 0.55rem 0;
+        }
+
+        .breakdown-box h4 {
+            color: var(--text-main);
+            font-size: 0.82rem;
+            margin-bottom: 0.35rem;
+            font-weight: 700;
+        }
+
+        .breakdown-item {
+            font-size: 0.78rem;
+            margin-bottom: 0.45rem;
+            padding-bottom: 0.45rem;
+            border-bottom: 1px dashed var(--border);
+            line-height: 1.45;
+        }
+
+        .breakdown-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .breakdown-item code {
+            background: #e2e8f0;
+            color: #0f172a;
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            font-size: 0.74rem;
+            font-weight: 600;
+        }
+
+        .callout {
+            border-radius: 6px;
+            padding: 0.65rem 0.85rem;
+            margin: 0.65rem 0;
+            border-left: 3px solid #10b981;
+            background: var(--success-bg);
+            color: var(--success-text);
+            font-size: 0.78rem;
+            line-height: 1.45;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="nav-bar">
+        <a href="../index.html" class="nav-link">← স্টাডি গাইড</a>
+        <a href="../../../../index.html" class="nav-link">🏠 মাস্টার ট্র্যাকার</a>
+    </div>
+
+    <header>
+        <div class="badge-row">
+            <span class="badge">Project Breakdown</span>
+            <span class="badge badge-success">Phase 02 — Topic 08</span>
+            <span class="badge">Mobile View</span>
+        </div>
+        <h1>ডেটার মূল অক্ষ নির্ণয় ইঞ্জিন (Data Axis Finder)</h1>
+        <p class="lead">
+            মোবাইলে পড়ার জন্য কমপ্যাক্ট কোড-বাই-কোড ব্রেকডাউন। কোড রান না করেই ইনপুট, আউটপুট ও লজিক বুঝে নিন।
+        </p>
+    </header>
+
+    <div class="card">
+        <h2><span class="step-num">০০</span> প্রজেক্টের প্রেক্ষাপট</h2>
+        <p>আইগেনভেক্টর দিয়ে ডেটার মূল তথ্য ধরে রাখা প্রধান অক্ষ (Principal Component) বের করা:</p>
+        <ul>
+            <li><strong>ধাপ ০১:</strong> <code>np.linalg.eig</code> দিয়ে আইগেনভ্যালু ও আইগেনভেক্টর বের করা।</li>
+            <li><strong>ধাপ ০২:</strong> প্রমাণ করা যে ভেক্টরের দিক বদলায়নি (<code>A @ v == lambda * v</code>)।</li>
+            <li><strong>ধাপ ০৩:</strong> সবচেয়ে বড় আইগেনভ্যালু দিয়ে ডেটার মূল অক্ষ নির্বাচন করা।</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2><span class="step-num">০১</span> ধাপ ০১: আইগেনভ্যালু ও ভেক্টর হিসাব</h2>
+        <div class="code-container">
+            <div class="code-header">Python (Step 1)</div>
+<pre><code>import numpy as np
+
+A = np.array([
+    [4, 2],
+    [1, 3]
+])
+eigenvalues, eigenvectors = np.linalg.eig(A)
+
+print("Eigenvalues  :", eigenvalues)
+print("Eigenvectors :\n", eigenvectors)</code></pre>
+        </div>
+
+        <div class="terminal-box">
+            <div class="term-title">🖥️ Terminal Output (Step 1)</div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>Eigenvalues  : [5. 2.]
+Eigenvectors :
+[[ 0.89442719 -0.70710678]
+ [ 0.4472136   0.70710678]]</code></pre>
+        </div>
+
+        <div class="breakdown-box">
+            <h4>🔍 কোড ব্রেকডাউন:</h4>
+            <div class="breakdown-item">
+                <code>eigenvalues = [5.0, 2.0]</code>: ম্যাট্রিক্সটি কোনো ভেক্টরকে ৫ গুণ এবং কোনোটিকে ২ গুণ প্রসারিত করে।
+            </div>
+            <div class="breakdown-item">
+                <code>eigenvectors</code>: কলাম ০ হলো ১ম ভেক্টর (স্কেল ৫.০) এবং কলাম ১ হলো ২য় ভেক্টর (স্কেল ২.০)।
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="step-num">০২</span> ধাপ ০২: প্রমাণ — দিক কখনোই বদলায় না!</h2>
+        <div class="code-container">
+            <div class="code-header">Python (Step 2)</div>
+<pre><code>v1 = eigenvectors[:, 0]
+lambda1 = eigenvalues[0]
+
+transformed_v = A @ v1
+scaled_v = lambda1 * v1
+
+print("A @ v1      :", np.round(transformed_v, 4))
+print("lambda * v1 :", np.round(scaled_v, 4))</code></pre>
+        </div>
+
+        <div class="terminal-box">
+            <div class="term-title">🖥️ Terminal Output (Step 2)</div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>A @ v1      : [4.4721 2.2361]
+lambda * v1 : [4.4721 2.2361]</code></pre>
+        </div>
+
+        <div class="breakdown-box">
+            <h4>🔍 কোড ব্রেকডাউন:</h4>
+            <div class="breakdown-item">
+                <code>transformed_v</code> এবং <code>scaled_v</code> হুবহু এক: <code>[4.4721, 2.2361]</code>!
+            </div>
+            <div class="breakdown-item">
+                ভেক্টরটি কোনো নতুন কোণে ঘোরে নি, শুধু সোজা আগের দিকেই ঠিক <strong>৫ গুণ লম্বা</strong> হয়েছে।
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="step-num">০৩</span> ধাপ ০৩: ডেটার মূল অক্ষ (Dominant Axis)</h2>
+        <div class="code-container">
+            <div class="code-header">Python (Step 3)</div>
+<pre><code>dominant_idx = np.argmax(eigenvalues)
+dominant_value = eigenvalues[dominant_idx]
+dominant_vector = eigenvectors[:, dominant_idx]
+
+print("Dominant Value :", dominant_value)
+print("Dominant Axis  :", dominant_vector)</code></pre>
+        </div>
+
+        <div class="terminal-box">
+            <div class="term-title">🖥️ Terminal Output (Step 3)</div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>Dominant Value : 5.0
+Dominant Axis  : [0.89442719 0.4472136 ]</code></pre>
+        </div>
+
+        <div class="breakdown-box">
+            <h4>🔍 কোড ব্রেকডাউন:</h4>
+            <div class="breakdown-item">
+                <code>np.argmax(eigenvalues)</code>: সর্বোচ্চ আইগেনভ্যালু ৫.০ খুঁজে পেয়েছে।
+            </div>
+            <div class="breakdown-item">
+                <code>[0.8944, 0.4472]</code> অক্ষটিই হলো ডেটাসেটের সবচেয়ে গুরুত্বপূর্ণ দিক (Principal Component)।
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="step-num">০৪</span> সম্পূর্ণ কার্যকর কোড (Full Script)</h2>
+        <div class="code-container">
+            <div class="code-header">full_code.py</div>
+<pre><code>import numpy as np
+
+A = np.array([[4, 2], [1, 3]])
+vals, vecs = np.linalg.eig(A)
+
+v1 = vecs[:, 0]
+l1 = vals[0]
+
+print("A @ v1      :", np.round(A @ v1, 4))
+print("lambda * v1 :", np.round(l1 * v1, 4))
+print("Dominant Axis:", vecs[:, np.argmax(vals)])</code></pre>
+        </div>
+
+        <div class="terminal-box">
+            <div class="term-title">🖥️ Terminal Output</div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>A @ v1      : [4.4721 2.2361]
+lambda * v1 : [4.4721 2.2361]
+Dominant Axis: [0.89442719 0.4472136 ]</code></pre>
+        </div>
+
+        <div class="callout">
+            <strong>🎯 মোবাইলে মনে রাখার সারমর্ম:</strong><br>
+            • <strong>Eigenvector:</strong> যে ভেক্টরের দিক কখনো বদলায় না।<br>
+            • <strong>Eigenvalue:</strong> ভেক্টরটি কতগুণ লম্বা বা খাটো হলো (যেমন: ৫ গুণ)।<br>
+            • <strong>PCA তে ব্যবহার:</strong> বড় আইগেনভ্যালুই ডেটার সবচেয়ে গুরুত্বপূর্ণ ফিচার বা অক্ষ নির্দেশ করে।
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>টপিক ০৮: আইগেনভ্যালু ও আইগেনভেক্টর (Eigenvalues & Eigenvectors)</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --surface-subtle: #f1f5f9;
+            --accent: #2563eb;
+            --accent-light: #eff6ff;
+            --accent-border: #bfdbfe;
+            --text-main: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --border-subtle: #cbd5e1;
+            --tag-bg: #e0f2fe;
+            --tag-text: #0369a1;
+            --success-bg: #ecfdf5;
+            --success-border: #a7f3d0;
+            --success-text: #065f46;
+            --warning-bg: #fffbeb;
+            --warning-border: #fde68a;
+            --warning-text: #92400e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+            background-color: var(--bg);
+            color: var(--text-body);
+            line-height: 1.8;
+            padding: 1.5rem 1rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .nav-bar {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.5rem 0.9rem;
+            background: var(--surface);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background: var(--surface-subtle);
+            border-color: var(--border-subtle);
+        }
+
+        header {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 6px solid var(--accent);
+            border-radius: 12px;
+            padding: 1.75rem;
+            margin-bottom: 1.75rem;
+            box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+        }
+
+        .badge-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.65rem;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.65rem;
+            line-height: 1.3;
+        }
+
+        .lead {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.75rem;
+            margin-bottom: 1.75rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            border-bottom: 2px solid var(--surface-subtle);
+            padding-bottom: 0.5rem;
+        }
+
+        h2 .section-num {
+            background: var(--accent);
+            color: #ffffff;
+            font-size: 0.8rem;
+            font-weight: 800;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+        }
+
+        p {
+            margin-bottom: 0.9rem;
+            color: var(--text-body);
+            font-size: 0.98rem;
+        }
+
+        ul, ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            color: var(--text-body);
+        }
+
+        li {
+            margin-bottom: 0.4rem;
+        }
+
+        strong {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        pre {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: "JetBrains Mono", Consolas, "Courier New", monospace;
+            font-size: 0.88rem;
+            color: #0f172a;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: "JetBrains Mono", Consolas, monospace;
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.88rem;
+            border: 1px solid #e2e8f0;
+            font-weight: 600;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            border: none;
+            color: inherit;
+        }
+
+        .formula-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 1.1rem;
+            font-family: "JetBrains Mono", Consolas, monospace;
+            font-size: 1rem;
+            color: #0f172a;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .callout {
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            border-left: 4px solid;
+            font-size: 0.95rem;
+        }
+
+        .callout-tip {
+            background: var(--success-bg);
+            border-color: #10b981;
+            color: var(--success-text);
+        }
+
+        .callout-info {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            color: #1e3a8a;
+        }
+
+        .project-cta {
+            background: #ffffff;
+            border: 2px dashed var(--accent);
+            border-radius: 12px;
+            padding: 1.75rem;
+            text-align: center;
+            margin-top: 1.75rem;
+        }
+
+        .btn-action {
+            display: inline-block;
+            background: var(--accent);
+            color: #ffffff;
+            font-weight: 700;
+            padding: 0.8rem 1.6rem;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-top: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .btn-action:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="nav-bar">
+        <a href="../../index.html" class="nav-link">🏠 মাস্টার সিলেবাস</a>
+        <a href="../07_Dot_Products_and_Matrix_Multiplication/index.html" class="nav-link">← পূর্ববর্তী: ডট প্রোডাক্ট ও ম্যাট্রিক্স গুণ</a>
+    </div>
+
+    <header>
+        <div class="badge-row">
+            <span class="badge">Phase 02: Mathematics</span>
+            <span class="badge badge-success">Topic 08</span>
+            <span class="badge">Data Science Core</span>
+        </div>
+        <h1>আইগেনভ্যালু ও আইগেনভেক্টর (Eigenvalues & Eigenvectors)</h1>
+        <p class="lead">
+            ম্যাথের কোনো জটিল ডিটারমিন্যান্ট সমীকরণ নয়! একজন প্রোগ্রামার হিসেবে বুঝুন: ডেটার হাজার হাজার বৈশিষ্ট্যের মধ্যে সবচেয়ে গুরুত্বপূর্ণ অক্ষ (Direction) বের করার জাদুকরী টুল হলো আইগেনভেক্টর।
+        </p>
+    </header>
+
+    <!-- সেকশন ১ -->
+    <section id="wind-analogy">
+        <h2><span class="section-num">০১</span> সহজ গল্প: বাতাসের ধাক্কায় তীরের দিক</h2>
+        <p>
+            আইগেনভেক্টরকে একদম পানির মতো সহজ করতে এই দৃশ্যপটটি চিন্তা করুন:
+        </p>
+        <ul>
+            <li>ধরুন একটি মাঠে মাটিতে বিভিন্ন কোণে কয়েকটি তীর (Vectors) আঁকা আছে।</li>
+            <li>হঠাৎ এক প্রবল বাতাস বা শক্তি (ম্যাট্রিক্স ট্রান্সফরমেশন) বয়ে গেল।</li>
+            <li>বাতাসের ধাক্কায় বেশিরভাগ তীরের <strong>দিক (Direction) বেঁকে গেল</strong>।</li>
+            <li><strong>কিন্তু ঠিক ১-২টি তীর এমন পাওয়া গেল, যাদের দিক একটুও বদলায়নি!</strong> তারা যেদিকে মুখ করে ছিল সেদিকেই রয়েছে—শুধু বাতাসের চাপে তাদের দৈর্ঘ্য ২ গুণ বা ৩ গুণ লম্বা হয়ে গেছে!</li>
+        </ul>
+
+        <div class="callout callout-tip">
+            🏹 <strong>Eigenvector (আইগেনভেক্টর):</strong> যে স্পেশাল ভেক্টরের <strong>দিক কখনোই বদলায় না</strong>।<br>
+            📏 <strong>Eigenvalue (আইগেনভ্যালু):</strong> সেই ভেক্টরটি আগের চেয়ে <strong>কতগুণ লম্বা বা খাটো হলো</strong> (যেমন: ২ গুণ, ৫ গুণ)।
+        </div>
+    </section>
+
+    <!-- সেকশন ২ -->
+    <section id="math-meaning">
+        <h2><span class="section-num">০২</span> প্রোগ্রামারের চোখে সূত্রটির অর্থ</h2>
+        <p>গণিতের বইয়ে আপনি হয়তো এই সূত্রটি দেখেছেন:</p>
+        <div class="formula-box">
+            A · v = λ · v
+        </div>
+        <p>এর প্রোগ্রামিং অর্থ খুবই সহজ:</p>
+        <ul>
+            <li><code>A</code> হলো একটি ম্যাট্রিক্স (একটি ডেটা ট্রান্সফরমেশন)।</li>
+            <li><code>v</code> হলো সেই স্পেশাল ভেক্টর (<strong>Eigenvector</strong>)।</li>
+            <li><code>λ</code> (ল্যাম্বডা) হলো একটি সাধারণ সংখ্যা (<strong>Eigenvalue</strong>)।</li>
+        </ul>
+        <p>
+            ম্যাট্রিক্স <code>A</code> দিয়ে ভেক্টর <code>v</code>-কে গুণ করলে কোনো জটিল ঘূর্ণন হয় না; শুধুমাত্র সাধারণ একটি সংখ্যা <code>λ</code> দিয়ে গুণ করার মতো ফলাফল বড় বা ছোট হয়!
+        </p>
+    </section>
+
+    <!-- সেকশন ৩ -->
+    <section id="why-ai-uses-it">
+        <h2><span class="section-num">০৩</span> মেশিন লার্নিং ও ডেটা সায়েন্সে এটা কেন লাগে?</h2>
+        <p>
+            বাস্তব জীবনে একটি ডেটাসেটে হয়তো ৫০টি বা ১০০টি কলাম (বৈশিষ্ট্য) থাকে। এতগুলো কলাম নিয়ে মডেল চালানো অনেক ধীরগতির এবং জটিল।
+        </p>
+        <p>
+            তখন <strong>PCA (Principal Component Analysis)</strong> ব্যবহার করা হয়। আইগেনভেক্টর বের করে দেখা যায়:
+        </p>
+        <ul>
+            <li><strong>সবচেয়ে বড় আইগেনভ্যালু:</strong> যে আইগেনভেক্টরের আইগেনভ্যালু সবচেয়ে বড়, সেই দিক বরাবর ডেটার সবচেয়ে বেশি বৈচিত্র্য বা মূল তথ্য (Variance) লুকানো থাকে!</li>
+            <li><strong>ডাইমেনশন কমানো:</strong> কম গুরুত্বপূর্ণ অক্ষগুলো বাদ দিয়ে ৫০টি কলামের ইনফরমেশনকে মাত্র ২টি বা ৩টি কলামে নামিয়ে আনা যায়।</li>
+        </ul>
+
+        <div class="callout callout-info">
+            <strong>গুগলের পেজর‍্যাঙ্ক:</strong> ইন্টারনেটের শত কোটি ওয়েবসাইটের মধ্যে কোন পেজটি সবচেয়ে গুরুত্বপূর্ণ, গুগল সার্চ ইঞ্জিন তার শুরুর দিকে এই আইগেনভেক্টরের কনসেপ্ট দিয়েই বের করত!
+        </div>
+    </section>
+
+    <!-- সেকশন ৪ -->
+    <section id="numpy-way">
+        <h2><span class="section-num">০৪</span> পাইথনে মাত্র ২ লাইনে কীভাবে বের করবেন?</h2>
+        <p>
+            হাতে-কলমে জটিল সমীকরণ সমাধান করার দরকার নেই। পাইথনের <code>np.linalg.eig()</code> ফাংশন এক নিমেষেই সব আইগেনভ্যালু ও আইগেনভেক্টর বের করে দেয়:
+        </p>
+<pre><code>import numpy as np
+
+# একটি সাধারণ ২D ম্যাট্রিক্স
+A = np.array([
+    [4, 2],
+    [1, 3]
+])
+
+# আইগেনভ্যালু ও আইগেনভেক্টর বের করা
+eigenvalues, eigenvectors = np.linalg.eig(A)
+
+print("Eigenvalues  :", eigenvalues)
+print("Eigenvectors :\n", eigenvectors)</code></pre>
+    </section>
+
+    <!-- সেকশন ৫ -->
+    <section id="project-prep" class="project-cta">
+        <h3>🚀 এবার প্রজেক্টের কোড ও ব্রেকডাউন দেখার পালা!</h3>
+        <p>
+            আমরা তৈরি করেছি <strong>Data Axis & Importance Finder</strong>। কোনো কোড রান করার দরকার নেই—মোবাইলে সরাসরি কোড, আউটপুট এবং লাইন-বাই-লাইন বাংলা ব্যাখ্যা দেখুন।
+        </p>
+        <a href="./Project/index.html" class="btn-action">📱 প্রজেক্ট কোড ও মোবাইল ব্রেকডাউন দেখুন →</a>
+    </section>
+</div>
+
+</body>
+</html>

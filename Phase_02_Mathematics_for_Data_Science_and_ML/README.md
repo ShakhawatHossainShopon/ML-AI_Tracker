@@ -7,8 +7,8 @@
 - [x] [Sequences and series](./Topics/04_Sequences_and_Series/index.html)
 - [x] [Vectors and matrices](./Topics/05_Vectors_and_Matrices/index.html)
 - [x] [Matrix operations](./Topics/06_Matrix_Operations/index.html)
-- [ ] [Dot products and matrix multiplication](./Topics/07_Dot_Products_and_Matrix_Multiplication/index.html)
-- [ ] Eigenvalues and eigenvectors
+- [x] [Dot products and matrix multiplication](./Topics/07_Dot_Products_and_Matrix_Multiplication/index.html)
+- [ ] [Eigenvalues and eigenvectors](./Topics/08_Eigenvalues_and_Eigenvectors/index.html)
 - [ ] Derivatives and differentiation
 - [ ] Partial derivatives
 - [ ] Integration

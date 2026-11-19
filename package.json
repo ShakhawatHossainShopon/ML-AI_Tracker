@@ -1,0 +1,12 @@
+{
+  "name": "ai-development-tracker",
+  "version": "1.0.0",
+  "description": "AI & ML Learning Journey Tracker with MongoDB Sync",
+  "main": "index.html",
+  "scripts": {
+    "start": "node api/status.js"
+  },
+  "dependencies": {
+    "mongodb": "^7.9.0"
+  }
+}

@@ -379,6 +379,11 @@
 </div>
 <header>
 <h1>Complete Data Science, Machine Learning &amp; AI Developer Syllabus</h1>
+<div class="sync-container" style="margin-top: 0.65rem;">
+    <span id="cloud-sync-status" style="display:inline-flex; align-items:center; gap:0.35rem; font-size:0.8rem; font-weight:700; padding:0.25rem 0.75rem; border-radius:20px; background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0;">
+        🟢 Cloud Synced (MongoDB Atlas)
+    </span>
+</div>
 </header>
 <div class="phase-card">
 <div class="phase-title">Phase 01 — Python Programming</div>
@@ -710,7 +715,7 @@
 <span>🟢 Done</span>
 </label>
 </div>
-</li><li class="topic-item status-working" data-id="ai_p02_t07">
+</li><li class="topic-item status-done" data-id="ai_p02_t07">
 <span class="topic-name"><strong>07.</strong> Dot products and matrix multiplication <a class="topic-link-badge" href="Phase_02_Mathematics_for_Data_Science_and_ML/Topics/07_Dot_Products_and_Matrix_Multiplication/index.html">📖 Study Guide</a></span>
 <div class="radio-checker-group">
 <label class="radio-label radio-pending" title="Not Started">
@@ -718,23 +723,23 @@
 <span>⚪ Pending</span>
 </label>
 <label class="radio-label radio-working" title="In Progress">
-<input checked="" name="ai_p02_t07" type="radio" value="working"/>
+<input name="ai_p02_t07" type="radio" value="working"/>
 <span>🟡 Working</span>
 </label>
 <label class="radio-label radio-done" title="Completed">
-<input name="ai_p02_t07" type="radio" value="done"/>
+<input checked="" name="ai_p02_t07" type="radio" value="done"/>
 <span>🟢 Done</span>
 </label>
 </div>
-</li><li class="topic-item" data-id="ai_p02_t08">
-<span class="topic-name"><strong>08.</strong> Eigenvalues and eigenvectors</span>
+</li><li class="topic-item status-working" data-id="ai_p02_t08">
+<span class="topic-name"><strong>08.</strong> Eigenvalues and eigenvectors <a class="topic-link-badge" href="Phase_02_Mathematics_for_Data_Science_and_ML/Topics/08_Eigenvalues_and_Eigenvectors/index.html">📖 Study Guide</a></span>
 <div class="radio-checker-group">
 <label class="radio-label radio-pending" title="Not Started">
-<input checked="" name="ai_p02_t08" type="radio" value="pending"/>
+<input name="ai_p02_t08" type="radio" value="pending"/>
 <span>⚪ Pending</span>
 </label>
 <label class="radio-label radio-working" title="In Progress">
-<input name="ai_p02_t08" type="radio" value="working"/>
+<input checked="" name="ai_p02_t08" type="radio" value="working"/>
 <span>🟡 Working</span>
 </label>
 <label class="radio-label radio-done" title="Completed">
@@ -6612,6 +6617,29 @@
 </div>
 <script>
 const STORAGE_KEY = 'ai_dev_syllabus_tracker_state_v1';
+let syncStatusEl = null;
+
+function setSyncIndicator(status, text) {
+    if (!syncStatusEl) {
+        syncStatusEl = document.getElementById('cloud-sync-status');
+    }
+    if (syncStatusEl) {
+        syncStatusEl.textContent = text;
+        if (status === 'syncing') {
+            syncStatusEl.style.background = '#fffbeb';
+            syncStatusEl.style.color = '#92400e';
+            syncStatusEl.style.borderColor = '#fde68a';
+        } else if (status === 'done') {
+            syncStatusEl.style.background = '#ecfdf5';
+            syncStatusEl.style.color = '#065f46';
+            syncStatusEl.style.borderColor = '#a7f3d0';
+        } else {
+            syncStatusEl.style.background = '#f1f5f9';
+            syncStatusEl.style.color = '#475569';
+            syncStatusEl.style.borderColor = '#cbd5e1';
+        }
+    }
+}
 
 function getStoredState() {
     try {
@@ -6623,6 +6651,44 @@ function getStoredState() {
 
 function saveState(state) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+async function fetchRemoteState() {
+    try {
+        setSyncIndicator('syncing', '🟡 Syncing with MongoDB...');
+        const res = await fetch('/api/status');
+        if (res.ok) {
+            const json = await res.json();
+            if (json.success && json.data) {
+                const local = getStoredState();
+                const merged = Object.assign({}, local, json.data);
+                saveState(merged);
+                updateUI();
+                setSyncIndicator('done', '🟢 Cloud Synced (MongoDB Atlas)');
+                return;
+            }
+        }
+    } catch (err) {
+        console.warn('API sync warning (using localStorage offline):', err);
+    }
+    setSyncIndicator('offline', '⚪ Offline / Cached State');
+}
+
+async function pushRemoteState(id, status) {
+    try {
+        setSyncIndicator('syncing', '🟡 Saving to Cloud...');
+        const res = await fetch('/api/status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, status })
+        });
+        if (res.ok) {
+            setSyncIndicator('done', '🟢 Cloud Synced (MongoDB Atlas)');
+        }
+    } catch (err) {
+        console.warn('Failed to push to remote:', err);
+        setSyncIndicator('offline', '⚪ Saved Locally (Offline)');
+    }
 }
 
 function updateUI() {
@@ -6679,6 +6745,7 @@ function onRadioChange(e) {
         state[name] = val;
         saveState(state);
         updateUI();
+        pushRemoteState(name, val);
     }
 }
 
@@ -6700,6 +6767,7 @@ function exportTracker() {
 document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('change', onRadioChange);
     updateUI();
+    fetchRemoteState();
 });
 </script>
 </body>
