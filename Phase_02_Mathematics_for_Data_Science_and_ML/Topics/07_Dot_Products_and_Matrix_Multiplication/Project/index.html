@@ -356,8 +356,11 @@ print("Total Bill for Customer 1:", single_customer_bill)</code></pre>
         </div>
 
         <div class="terminal-box">
-            <div class="term-title">🖥️ টার্মিনাল আউটপুট (Terminal Output)</div>
-Total Bill for Customer 1: 390
+            <div class="term-title">🖥️ টার্মিনাল আউটপুট (Terminal Output: Step 1)</div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>$ python -c "..."
+Items Bought (Apples, Milk, Eggs) : [3 2 5]
+Item Unit Prices (Taka)           : [50 90 12]
+Total Bill for Customer 1         : 390</code></pre>
         </div>
 
         <div class="breakdown-box">
@@ -401,8 +404,14 @@ print("All Customers Bills:", all_customers_bills)</code></pre>
         </div>
 
         <div class="terminal-box">
-            <div class="term-title">🖥️ টার্মিনাল আউটপুট (Terminal Output)</div>
-All Customers Bills: [390 530 324]
+            <div class="term-title">🖥️ টার্মিনাল আউটপুট (Terminal Output: Step 2)</div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>$ python -c "..."
+Customers Orders Table:
+[[ 3  2  5]
+ [ 1  4 10]
+ [ 0  2 12]]
+
+All Customers Bills [Cust 1, Cust 2, Cust 3]: [390 530 324]</code></pre>
         </div>
 
         <div class="breakdown-box">
@@ -449,11 +458,12 @@ print(comparison_table)</code></pre>
         </div>
 
         <div class="terminal-box">
-            <div class="term-title">🖥️ টার্মিনাল আউটপুট (Terminal Output)</div>
-Comparison Table (Cols: Dhanmondi vs Uttara):
+            <div class="term-title">🖥️ টার্মিনাল আউটপুট (Terminal Output: Step 3)</div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>$ python -c "..."
+Comparison Table (Rows: Customers, Col 0: Dhanmondi, Col 1: Uttara):
 [[390 384]
  [530 528]
- [324 310]]
+ [324 310]]</code></pre>
         </div>
 
         <div class="breakdown-box">
@@ -512,6 +522,17 @@ comparison_table = customers_orders @ store_prices
 print("Single Bill :", single_customer_bill)
 print("All Bills   :", all_customers_bills)
 print("Store Bills :\n", comparison_table)</code></pre>
+        </div>
+
+        <div class="terminal-box">
+            <div class="term-title">🖥️ সম্পূর্ণ ফাইলের টার্মিনাল রান (Terminal Output: python applied.py)</div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>$ python applied.py
+Single Bill : 390
+All Bills   : [390 530 324]
+Store Bills :
+[[390 384]
+ [530 528]
+ [324 310]]</code></pre>
         </div>
 
         <div class="callout callout-tip">
