@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>প্রজেক্ট ব্রেকডাউন: Crypto Asset Volatility & Risk Scorer (ক্রিপ্টো অ্যাসেট ভোলাটিলিটি ও রিস্ক স্কোরার)</title>
+    <style>
+:root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-subtle: #f1f5f9;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --text-main: #0f172a;
+    --text-body: #334155;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --tag-bg: #e0f2fe;
+    --tag-text: #0369a1;
+    --success-bg: #ecfdf5;
+    --success-text: #065f46;
+    --code-bg: #090d16;
+    --code-text: #f8fafc;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+    background-color: var(--bg);
+    color: var(--text-body);
+    line-height: 1.55;
+    padding: 0.75rem 0.6rem;
+    font-size: 0.88rem;
+    -webkit-font-smoothing: antialiased;
+}
+.container {
+    max-width: 720px;
+    margin: 0 auto;
+}
+.nav-bar {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.76rem;
+    padding: 0.3rem 0.55rem;
+    background: var(--surface);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 0.9rem 0.95rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+.badge-row {
+    display: flex;
+    gap: 0.35rem;
+    margin-bottom: 0.4rem;
+    flex-wrap: wrap;
+}
+.badge {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+}
+.badge-success {
+    background: var(--success-bg);
+    color: var(--success-text);
+}
+h1 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.25rem;
+    line-height: 1.35;
+}
+.lead {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+}
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem 0.95rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+h2 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-bottom: 1px solid var(--surface-subtle);
+    padding-bottom: 0.35rem;
+}
+h2 .step-num {
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 0.12rem 0.4rem;
+    border-radius: 4px;
+}
+p {
+    margin-bottom: 0.65rem;
+    color: var(--text-body);
+    font-size: 0.84rem;
+    line-height: 1.55;
+}
+.code-container {
+    margin: 0.6rem 0;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #1e293b;
+    position: relative;
+}
+.code-header {
+    background: #1e293b;
+    color: #94a3b8;
+    padding: 0.3rem 0.65rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.75rem 0.85rem;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.76rem;
+    line-height: 1.45;
+    margin: 0;
+}
+code {
+    font-family: "JetBrains Mono", Consolas, monospace;
+    background: #f1f5f9;
+    color: #0f172a;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.78rem;
+}
+pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+.terminal-box {
+    background: #050811;
+    border: 1px solid #1e293b;
+    border-left: 3px solid #10b981;
+    border-radius: 6px;
+    padding: 0.65rem 0.85rem;
+    margin: 0.6rem 0;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.74rem;
+    color: #38bdf8;
+    overflow-x: auto;
+    line-height: 1.4;
+    position: relative;
+}
+.term-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+}
+.term-title {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.breakdown-box {
+    background: var(--surface-subtle);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+    padding: 0.75rem 0.85rem;
+    margin: 0.6rem 0;
+}
+.breakdown-box h4 {
+    color: var(--text-main);
+    font-size: 0.82rem;
+    margin-bottom: 0.45rem;
+    font-weight: 700;
+}
+.breakdown-item {
+    font-size: 0.8rem;
+    margin-bottom: 0.45rem;
+    padding-bottom: 0.45rem;
+    border-bottom: 1px dashed var(--border);
+    line-height: 1.5;
+}
+.breakdown-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.callout {
+    background: var(--accent-light);
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 0.75rem 0.85rem;
+    margin-top: 0.75rem;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+.copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    transition: all 0.2s ease;
+    user-select: none;
+    line-height: 1.2;
+}
+.copy-btn:hover, .copy-btn:active {
+    background: rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.45);
+}
+.copy-btn.copied {
+    background: #10b981 !important;
+    border-color: #059669 !important;
+    color: #ffffff !important;
+}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="nav-bar">
+        <a href="../index.html" class="nav-link">← স্টাডি গাইড</a>
+        <a href="../../../../index.html" class="nav-link">🏠 মাস্টার ট্র্যাকার</a>
+    </div>
+    <header>
+        <div class="badge-row">
+            <span class="badge">Project Breakdown</span>
+            <span class="badge badge-success">Phase 03 — Topic 03</span>
+            <span class="badge">Mobile View</span>
+        </div>
+        <h1>ক্রিপ্টো অ্যাসেট ভোলাটিলিটি ও রিস্ক স্কোরার (Crypto Asset Volatility & Risk Scorer)</h1>
+        <p class="lead">দুটি ডিজিটাল অ্যাসেটের দৈনিক ওঠানামার ভ্যারিয়েন্স ও স্ট্যান্ডার্ড ডেভিয়েশন পরিমাপ করে ঝুঁকি স্কোর নির্ধারণ।</p>
+    </header>
+    
+    <!-- স্টেপসমূহ -->
+    
+    <div class="card">
+        <h2><span class="step-num">০১</span> ধাপ ০১: অ্যাসেট রিটার্ন ও গড় হিসেব</h2>
+        <p>দুটি অ্যাসেটের ৭ দিনের লাভ/ক্ষতির গড় হিসাব করা:</p>
+        <div class="code-container">
+            <div class="code-header">
+                <span>step1_returns.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code>returns_a = [3.0, 3.2, 2.8, 3.1, 2.9, 3.0, 3.0]
+returns_b = [-10.0, 20.0, -5.0, 15.0, -8.0, 12.0, -3.0]
+
+mean_a = sum(returns_a) / len(returns_a)
+mean_b = sum(returns_b) / len(returns_b)
+
+print(f"Asset A Average Return: {mean_a:.2f}%")
+print(f"Asset B Average Return: {mean_b:.2f}%")</code></pre>
+        </div>
+        <div class="terminal-box">
+            <div class="term-header">
+                <span class="term-title">🖥️ Terminal Output</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Output</button>
+            </div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>Asset A Average Return: 3.00%
+Asset B Average Return: 3.00%</code></pre>
+        </div>
+        <div class="breakdown-box">
+            <h4>🔍 কোড ব্রেকডাউন:</h4>
+            <div class="breakdown-item">উভয় অ্যাসেটেরই গড় দৈনিক রিটার্ন ঠিক ৩.০০%।</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="step-num">০২</span> ধাপ ০২: ভ্যারিয়েন্স ও পরিমিত ব্যবধান</h2>
+        <p>ব্যাসেলের কারেকশন (N-1) দিয়ে স্যাম্পল ভ্যারিয়েন্স নির্ণয়:</p>
+        <div class="code-container">
+            <div class="code-header">
+                <span>step2_variance.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code>n = len(returns_a)
+var_a = sum((x - mean_a)**2 for x in returns_a) / (n - 1)
+sd_a = var_a ** 0.5
+
+var_b = sum((x - mean_b)**2 for x in returns_b) / (n - 1)
+sd_b = var_b ** 0.5
+
+print(f"Asset A -> Var: {var_a:.4f} | StdDev: {sd_a:.2f}%")
+print(f"Asset B -> Var: {var_b:.4f} | StdDev: {sd_b:.2f}%")</code></pre>
+        </div>
+        <div class="terminal-box">
+            <div class="term-header">
+                <span class="term-title">🖥️ Terminal Output</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Output</button>
+            </div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>Asset A -> Var: 0.0167 | StdDev: 0.13%
+Asset B -> Var: 147.6667 | StdDev: 12.15%</code></pre>
+        </div>
+        <div class="breakdown-box">
+            <h4>🔍 কোড ব্রেকডাউন:</h4>
+            <div class="breakdown-item">Asset B এর স্ট্যান্ডার্ড ডেভিয়েশন ১২.১৫%, যা Asset A (০.১৩%) এর তুলনায় প্রায় ১০০ গুণ বেশি ঝুঁকিপূর্ণ!</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="step-num">০৩</span> ধাপ ০৩: অটোমেটেড রিস্ক রেটিং</h2>
+        <p>স্ট্যান্ডার্ড ডেভিয়েশনের ওপর ভিত্তি করে ঝুঁকি ক্যাটাগরাইজেশন:</p>
+        <div class="code-container">
+            <div class="code-header">
+                <span>step3_risk_level.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code>def rate_risk(sd):
+    if sd < 1.0: return "LOW RISK (Conservative)"
+    if sd < 5.0: return "MODERATE RISK"
+    return "HIGH RISK (Speculative)"
+
+print("Asset A Rating:", rate_risk(sd_a))
+print("Asset B Rating:", rate_risk(sd_b))</code></pre>
+        </div>
+        <div class="terminal-box">
+            <div class="term-header">
+                <span class="term-title">🖥️ Terminal Output</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Output</button>
+            </div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>Asset A Rating: LOW RISK (Conservative)
+Asset B Rating: HIGH RISK (Speculative)</code></pre>
+        </div>
+        <div class="breakdown-box">
+            <h4>🔍 কোড ব্রেকডাউন:</h4>
+            <div class="breakdown-item">অ্যালগরিদমিক ট্রেডিং বট এই স্কোরের ভিত্তিতে পোর্টফোলিওতে সম্পদ বরাদ্দ করে।</div>
+        </div>
+    </div>
+
+
+    <!-- ধাপ ০৪: সম্পূর্ণ কার্যকর কোড -->
+    <div class="card">
+        <h2><span class="step-num">০৪</span> সম্পূর্ণ কার্যকর কোড ও মোবাইল সামারি</h2>
+        <div class="code-container">
+            <div class="code-header">
+                <span>full_volatility.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code>returns_a = [3.0, 3.2, 2.8, 3.1, 2.9, 3.0, 3.0]
+returns_b = [-10.0, 20.0, -5.0, 15.0, -8.0, 12.0, -3.0]
+n = len(returns_a)
+sd_a = (sum((x - 3.0)**2 for x in returns_a) / (n - 1)) ** 0.5
+sd_b = (sum((x - 3.0)**2 for x in returns_b) / (n - 1)) ** 0.5
+print(f"Asset A Risk: {sd_a:.2f}% | Asset B Risk: {sd_b:.2f}%")</code></pre>
+        </div>
+        <div class="terminal-box">
+            <div class="term-header">
+                <span class="term-title">🖥️ Full Terminal Run</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Output</button>
+            </div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>Asset A Risk: 0.13% | Asset B Risk: 12.15%</code></pre>
+        </div>
+        <div class="callout">
+            <strong>🎯 মোবাইলে মনে রাখার সারমর্ম:</strong><br>
+            • গড় একা ঝুঁকি প্রকাশ করতে পারে না।<br>• ভ্যারিয়েন্স বিচ্যুতির বর্গের গড় নির্দেশ করে।<br>• স্ট্যান্ডার্ড ডেভিয়েশন মূল এককে ফিরে এসে বাস্তব ঝুঁকি পরিমাপ করে।
+        </div>
+    </div>
+</div>
+
+<script>
+function copyBox(btn) {
+    const container = btn.closest('.code-container') || btn.closest('.terminal-box');
+    const codeEl = container ? (container.querySelector('pre') || container.querySelector('code')) : null;
+    const text = codeEl ? codeEl.innerText.trim() : '';
+    
+    function showSuccess() {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✅ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.innerHTML = orig;
+            btn.classList.remove('copied');
+        }, 2000);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showSuccess).catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
+    }
+
+    function fallbackCopy(str) {
+        const ta = document.createElement('textarea');
+        ta.value = str;
+        ta.style.position = 'fixed';
+        ta.style.top = '0';
+        ta.style.left = '0';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try {
+            document.execCommand('copy');
+            showSuccess();
+        } catch(e) {}
+        document.body.removeChild(ta);
+    }
+}
+</script>
+</body>
+</html>

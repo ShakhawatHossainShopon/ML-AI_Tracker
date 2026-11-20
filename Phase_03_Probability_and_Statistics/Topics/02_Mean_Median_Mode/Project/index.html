@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>প্রজেক্ট ব্রেকডাউন: Salary Distribution & Outlier Robustness Engine (বেতন বিন্যাস ও আউটলায়ার সহনশীলতা ইঞ্জিন)</title>
+    <style>
+:root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-subtle: #f1f5f9;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --text-main: #0f172a;
+    --text-body: #334155;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --tag-bg: #e0f2fe;
+    --tag-text: #0369a1;
+    --success-bg: #ecfdf5;
+    --success-text: #065f46;
+    --code-bg: #090d16;
+    --code-text: #f8fafc;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+    background-color: var(--bg);
+    color: var(--text-body);
+    line-height: 1.55;
+    padding: 0.75rem 0.6rem;
+    font-size: 0.88rem;
+    -webkit-font-smoothing: antialiased;
+}
+.container {
+    max-width: 720px;
+    margin: 0 auto;
+}
+.nav-bar {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.76rem;
+    padding: 0.3rem 0.55rem;
+    background: var(--surface);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 0.9rem 0.95rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+.badge-row {
+    display: flex;
+    gap: 0.35rem;
+    margin-bottom: 0.4rem;
+    flex-wrap: wrap;
+}
+.badge {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+}
+.badge-success {
+    background: var(--success-bg);
+    color: var(--success-text);
+}
+h1 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.25rem;
+    line-height: 1.35;
+}
+.lead {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+}
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem 0.95rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+h2 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-bottom: 1px solid var(--surface-subtle);
+    padding-bottom: 0.35rem;
+}
+h2 .step-num {
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 0.12rem 0.4rem;
+    border-radius: 4px;
+}
+p {
+    margin-bottom: 0.65rem;
+    color: var(--text-body);
+    font-size: 0.84rem;
+    line-height: 1.55;
+}
+.code-container {
+    margin: 0.6rem 0;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #1e293b;
+    position: relative;
+}
+.code-header {
+    background: #1e293b;
+    color: #94a3b8;
+    padding: 0.3rem 0.65rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.75rem 0.85rem;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.76rem;
+    line-height: 1.45;
+    margin: 0;
+}
+code {
+    font-family: "JetBrains Mono", Consolas, monospace;
+    background: #f1f5f9;
+    color: #0f172a;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.78rem;
+}
+pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+.terminal-box {
+    background: #050811;
+    border: 1px solid #1e293b;
+    border-left: 3px solid #10b981;
+    border-radius: 6px;
+    padding: 0.65rem 0.85rem;
+    margin: 0.6rem 0;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.74rem;
+    color: #38bdf8;
+    overflow-x: auto;
+    line-height: 1.4;
+    position: relative;
+}
+.term-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+}
+.term-title {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.breakdown-box {
+    background: var(--surface-subtle);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+    padding: 0.75rem 0.85rem;
+    margin: 0.6rem 0;
+}
+.breakdown-box h4 {
+    color: var(--text-main);
+    font-size: 0.82rem;
+    margin-bottom: 0.45rem;
+    font-weight: 700;
+}
+.breakdown-item {
+    font-size: 0.8rem;
+    margin-bottom: 0.45rem;
+    padding-bottom: 0.45rem;
+    border-bottom: 1px dashed var(--border);
+    line-height: 1.5;
+}
+.breakdown-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.callout {
+    background: var(--accent-light);
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 0.75rem 0.85rem;
+    margin-top: 0.75rem;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+.copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    transition: all 0.2s ease;
+    user-select: none;
+    line-height: 1.2;
+}
+.copy-btn:hover, .copy-btn:active {
+    background: rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.45);
+}
+.copy-btn.copied {
+    background: #10b981 !important;
+    border-color: #059669 !important;
+    color: #ffffff !important;
+}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="nav-bar">
+        <a href="../index.html" class="nav-link">← স্টাডি গাইড</a>
+        <a href="../../../../index.html" class="nav-link">🏠 মাস্টার ট্র্যাকার</a>
+    </div>
+    <header>
+        <div class="badge-row">
+            <span class="badge">Project Breakdown</span>
+            <span class="badge badge-success">Phase 03 — Topic 02</span>
+            <span class="badge">Mobile View</span>
+        </div>
+        <h1>বেতন বিন্যাস ও আউটলায়ার সহনশীলতা ইঞ্জিন (Salary Distribution & Outlier Robustness Engine)</h1>
+        <p class="lead">প্রতিষ্ঠানের কর্মীদের বেতনে চরম আউটলায়ার যুক্ত হলে গড়, মধ্যক ও প্রচুরকের প্রতিক্রিয়া পর্যবেক্ষণ।</p>
+    </header>
+    
+    <!-- স্টেপসমূহ -->
+    
+    <div class="card">
+        <h2><span class="step-num">০১</span> ধাপ ০১: স্বাভাবিক ডেটাসেটে কেন্দ্রীয় প্রবণতা</h2>
+        <p>সাধারণ ১০ জন কর্মীর বেতনের গড়, মধ্যক ও প্রচুরক গণনা:</p>
+        <div class="code-container">
+            <div class="code-header">
+                <span>step1_baseline.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code>from collections import Counter
+
+salaries = [35, 40, 45, 42, 50, 40, 48, 40, 55, 38]
+n = len(salaries)
+mean_s = sum(salaries) / n
+s_sorted = sorted(salaries)
+med_s = (s_sorted[n//2 - 1] + s_sorted[n//2]) / 2.0
+mode_s = Counter(salaries).most_common(1)[0][0]
+
+print(f"Mean: {mean_s}k | Median: {med_s}k | Mode: {mode_s}k")</code></pre>
+        </div>
+        <div class="terminal-box">
+            <div class="term-header">
+                <span class="term-title">🖥️ Terminal Output</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Output</button>
+            </div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>Mean: 43.3k | Median: 41.0k | Mode: 40k</code></pre>
+        </div>
+        <div class="breakdown-box">
+            <h4>🔍 কোড ব্রেকডাউন:</h4>
+            <div class="breakdown-item">স্বাভাবিক অবস্থায় তিনটি পরিমাপই পরস্পরের খুব কাছাকাছি (৪০k-৪৩k)।</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="step-num">০২</span> ধাপ ০২: চরম আউটলায়ার প্রবেশ করানো</h2>
+        <p>কোম্পানির মালিক ১০০০k (১০ লাখ) টাকা বেতন যোগ করলে কী ঘটে:</p>
+        <div class="code-container">
+            <div class="code-header">
+                <span>step2_outlier.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code>skewed_salaries = salaries + [1000]
+n_new = len(skewed_salaries)
+new_mean = sum(skewed_salaries) / n_new
+s_skewed = sorted(skewed_salaries)
+new_med = s_skewed[n_new // 2]
+new_mode = Counter(skewed_salaries).most_common(1)[0][0]
+
+print(f"New Mean   : {new_mean:.2f}k (Shifted by +{new_mean - mean_s:.2f}k!)")
+print(f"New Median : {new_med}k (Shifted by only +{new_med - med_s:.2f}k)")
+print(f"New Mode   : {new_mode}k (Completely Unchanged!)")</code></pre>
+        </div>
+        <div class="terminal-box">
+            <div class="term-header">
+                <span class="term-title">🖥️ Terminal Output</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Output</button>
+            </div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>New Mean   : 130.27k (Shifted by +86.97k!)
+New Median : 42k (Shifted by only +1.00k)
+New Mode   : 40k (Completely Unchanged!)</code></pre>
+        </div>
+        <div class="breakdown-box">
+            <h4>🔍 কোড ব্রেকডাউন:</h4>
+            <div class="breakdown-item">গড় লাফিয়ে ১৩০k হয়ে যায়, অথচ মধ্যক মাত্র ১k পরিবর্তন হয়ে ৪২k থাকে।</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="step-num">০৩</span> ধাপ ০৩: ডেটা ক্লিনিং সিদ্ধান্ত লজিক</h2>
+        <p>এআই মডেলে মিসিং ভ্যালু পূরণ করতে সঠিক মেজার নির্বাচন:</p>
+        <div class="code-container">
+            <div class="code-header">
+                <span>step3_decision.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code>def get_best_imputer(data):
+    mean_val = sum(data) / len(data)
+    s = sorted(data)
+    med_val = s[len(s)//2]
+    # যদি গড় ও মধ্যকের পার্থক্য ২০% এর বেশি হয় তবে ডেটা স্কিউড
+    if abs(mean_val - med_val) / med_val > 0.20:
+        return "USE MEDIAN (Data is heavily skewed!)"
+    return "USE MEAN (Data is symmetrical)"
+
+print("Decision for regular salaries:", get_best_imputer(salaries))
+print("Decision for skewed salaries :", get_best_imputer(skewed_salaries))</code></pre>
+        </div>
+        <div class="terminal-box">
+            <div class="term-header">
+                <span class="term-title">🖥️ Terminal Output</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Output</button>
+            </div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>Decision for regular salaries: USE MEAN (Data is symmetrical)
+Decision for skewed salaries : USE MEDIAN (Data is heavily skewed!)</code></pre>
+        </div>
+        <div class="breakdown-box">
+            <h4>🔍 কোড ব্রেকডাউন:</h4>
+            <div class="breakdown-item">স্বয়ংক্রিয় এআই প্রি-প্রসেসিংয়ে এই নিয়মে মিসিং ভ্যালু পূরণ করা হয়।</div>
+        </div>
+    </div>
+
+
+    <!-- ধাপ ০৪: সম্পূর্ণ কার্যকর কোড -->
+    <div class="card">
+        <h2><span class="step-num">০৪</span> সম্পূর্ণ কার্যকর কোড ও মোবাইল সামারি</h2>
+        <div class="code-container">
+            <div class="code-header">
+                <span>full_central_tendency.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code>from collections import Counter
+salaries = [35, 40, 45, 42, 50, 40, 48, 40, 55, 38, 1000]
+n = len(salaries)
+print(f"Mean: {sum(salaries)/n:.1f}k | Median: {sorted(salaries)[n//2]}k | Mode: {Counter(salaries).most_common(1)[0][0]}k")</code></pre>
+        </div>
+        <div class="terminal-box">
+            <div class="term-header">
+                <span class="term-title">🖥️ Full Terminal Run</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Output</button>
+            </div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>Mean: 130.3k | Median: 42k | Mode: 40k</code></pre>
+        </div>
+        <div class="callout">
+            <strong>🎯 মোবাইলে মনে রাখার সারমর্ম:</strong><br>
+            • গড় আউটলায়ারের বিরুদ্ধে অত্যন্ত দুর্বল।<br>• মধ্যক আউটলায়ারযুক্ত ডেটাসেটে সবচেয়ে নির্ভরযোগ্য কেন্দ্রীয় মান।<br>• ক্যাটাগরিক্যাল ডেটায় প্রচুরক (Mode) একমাত্র উপযোগী মেট্রিক।
+        </div>
+    </div>
+</div>
+
+<script>
+function copyBox(btn) {
+    const container = btn.closest('.code-container') || btn.closest('.terminal-box');
+    const codeEl = container ? (container.querySelector('pre') || container.querySelector('code')) : null;
+    const text = codeEl ? codeEl.innerText.trim() : '';
+    
+    function showSuccess() {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✅ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.innerHTML = orig;
+            btn.classList.remove('copied');
+        }, 2000);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showSuccess).catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
+    }
+
+    function fallbackCopy(str) {
+        const ta = document.createElement('textarea');
+        ta.value = str;
+        ta.style.position = 'fixed';
+        ta.style.top = '0';
+        ta.style.left = '0';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try {
+            document.execCommand('copy');
+            showSuccess();
+        } catch(e) {}
+        document.body.removeChild(ta);
+    }
+}
+</script>
+</body>
+</html>

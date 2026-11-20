@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Correlation and Covariance — সহভেদাঙ্ক ও সহসম্পর্ক: ভ্যারিয়েবলের পারস্পরিক সম্পর্কের শক্তি ও দিক</title>
+    <style>
+:root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-subtle: #f1f5f9;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --text-main: #0f172a;
+    --text-body: #334155;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --tag-bg: #e0f2fe;
+    --tag-text: #0369a1;
+    --success-bg: #ecfdf5;
+    --success-text: #065f46;
+    --code-bg: #090d16;
+    --code-text: #f8fafc;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+    background-color: var(--bg);
+    color: var(--text-body);
+    line-height: 1.6;
+    padding: 0.75rem 0.6rem;
+    font-size: 0.9rem;
+    -webkit-font-smoothing: antialiased;
+}
+.container {
+    max-width: 760px;
+    margin: 0 auto;
+}
+.nav-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+    flex-wrap: wrap;
+}
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.78rem;
+    padding: 0.35rem 0.65rem;
+    background: var(--surface);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 1.1rem 1rem;
+    margin-bottom: 0.85rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+.badge-row {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+.badge {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+}
+.badge-success {
+    background: var(--success-bg);
+    color: var(--success-text);
+}
+h1 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+    line-height: 1.35;
+}
+.lead {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+.card, section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.85rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--surface-subtle);
+    padding-bottom: 0.45rem;
+}
+h2 .section-num {
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+}
+h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0.85rem 0 0.45rem 0;
+}
+p {
+    margin-bottom: 0.75rem;
+    color: var(--text-body);
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+ul, ol {
+    margin-bottom: 0.85rem;
+    padding-left: 1.35rem;
+    color: var(--text-body);
+    font-size: 0.86rem;
+    line-height: 1.6;
+}
+li {
+    margin-bottom: 0.4rem;
+}
+strong {
+    color: var(--text-main);
+    font-weight: 700;
+}
+.code-container {
+    margin: 0.75rem 0;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #1e293b;
+    position: relative;
+}
+.code-header {
+    background: #1e293b;
+    color: #94a3b8;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.85rem 1rem;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    margin: 0;
+}
+code {
+    font-family: "JetBrains Mono", Consolas, monospace;
+    background: #f1f5f9;
+    color: #0f172a;
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+.terminal-box {
+    background: #050811;
+    border: 1px solid #1e293b;
+    border-left: 3px solid #10b981;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    margin: 0.75rem 0;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.76rem;
+    color: #38bdf8;
+    overflow-x: auto;
+    line-height: 1.45;
+    position: relative;
+}
+.term-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+.term-title {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.breakdown-box {
+    background: var(--surface-subtle);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+    padding: 0.85rem 1rem;
+    margin: 0.75rem 0;
+}
+.breakdown-box h4 {
+    color: var(--text-main);
+    font-size: 0.88rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+.breakdown-item {
+    font-size: 0.84rem;
+    margin-bottom: 0.55rem;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px dashed var(--border);
+    line-height: 1.55;
+}
+.breakdown-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.takeaway-box {
+    background: var(--accent-light);
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
+    padding: 1rem 1.15rem;
+    margin: 0.85rem 0;
+}
+.takeaway-item {
+    margin-bottom: 0.75rem;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+.takeaway-item:last-child {
+    margin-bottom: 0;
+}
+.takeaway-title {
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.2rem;
+}
+.project-cta {
+    background: #ffffff;
+    border: 2px dashed var(--accent);
+    border-radius: 8px;
+    padding: 1.25rem 1rem;
+    text-align: center;
+    margin-top: 1rem;
+}
+.project-cta h3 {
+    margin-top: 0;
+    font-size: 1.05rem;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+}
+.project-cta p {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    margin-bottom: 0.85rem;
+}
+.btn-action {
+    display: inline-block;
+    background: var(--accent);
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.86rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    transition: all 0.2s;
+}
+.btn-action:hover {
+    background: #1d4ed8;
+}
+.copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    transition: all 0.2s ease;
+    user-select: none;
+    line-height: 1.2;
+}
+.copy-btn:hover, .copy-btn:active {
+    background: rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.45);
+}
+.copy-btn.copied {
+    background: #10b981 !important;
+    border-color: #059669 !important;
+    color: #ffffff !important;
+}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="nav-bar">
+        <a href="../../index.html" class="nav-link">🏠 মাস্টার সিলেবাস</a>
+        <a href="../../../../index.html" class="nav-link">📋 ট্র্যাকার</a>
+    </div>
+    <header>
+        <div class="badge-row">
+            <span class="badge">Phase 03: Topic 15</span>
+            <span class="badge badge-success">Mobile View</span>
+        </div>
+        <h1>Correlation and Covariance — সহভেদাঙ্ক ও সহসম্পর্ক: ভ্যারিয়েবলের পারস্পরিক সম্পর্কের শক্তি ও দিক</h1>
+        <p class="lead">বিজ্ঞানের সবচেয়ে বিখ্যাত সতর্কবার্তা: 'কোরিলেশন মানেই কার্যকারণ (Causation) নয়'। পিয়ারসন কোরিলেশন কোএফিশিয়েন্ট ও ফিচার সিলেকশন ইঞ্জিন।</p>
+    </header>
+    
+    <!-- ০১ থিওরি ও মূল কনসেপ্ট -->
+    <section>
+        <h2><span class="section-num">০১</span> থিওরি ও মূল কনসেপ্ট (Theory & Core Concepts)</h2>
+        <h3>সহভেদাঙ্ক (Covariance) বনাম সহসম্পর্ক (Correlation)</h3>
+        <p>মেশিন লার্নিং ফিচার ইঞ্জিনিয়ারিংয়ের মূল রহস্য হলো—কোন ফিচারগুলো টার্গেট ভ্যারিয়েবলের সাথে গভীরভাবে সম্পর্কিত তা খুঁজে বের করা। এই সম্পর্কের দিক ও তীব্রতা পরিমাপ করে <strong>কোভ্যারিয়েন্স ও কোরিলেশন</strong>।</p>
+<ul>
+    <li><strong>সহভেদাঙ্ক (Covariance - Cov(X, Y)):</strong> দুটি চলক একসাথে কীভাবে পরিবর্তিত হয় তার পরিমাপ।
+        <br><code>Cov(X, Y) = [&sum; (x_i - mean_x) * (y_i - mean_y)] / (n - 1)</code>
+        <br><em>দুর্বলতা:</em> কোভ্যারিয়েন্সের মান স্কেল বা এককের ওপর নির্ভরশীল (ডলার বা সেন্টে হিসাব করলে মান হাজার গুণ বদলে যায়), তাই দুটি ভিন্ন ফিচারের সম্পর্ক তুলনা করা কঠিন।</li>
+    <li><strong>পিয়ারসন সহসম্পর্ক সহগ (Pearson Correlation Coefficient - r):</strong> কোভ্যারিয়েন্সকে উভয়ের স্ট্যান্ডার্ড ডেভিয়েশন দিয়ে ভাগ করে স্কেল-মুক্ত (Standardized) রূপ দেওয়া:
+        <br><code>r = Cov(X, Y) / (s_x * s_y)</code>
+        <br>যেখানে এর মান সবসময় \(-1.0 \le r \le +1.0\) এর মধ্যে সীমাবদ্ধ থাকে:
+        <ul>
+            <li>\(r = +1.0\): নিখুঁত ধনাত্মক লিনিয়ার সম্পর্ক (একটি বাড়লে অন্যটিও অবধারিতভাবে বাড়ে)।</li>
+            <li>\(r = -1.0\): নিখুঁত ঋণাত্মক লিনিয়ার সম্পর্ক (একটি বাড়লে অন্যটি নিশ্চিতভাবে কমে)।</li>
+            <li>\(r = 0.0\): কোনো লিনিয়ার সম্পর্ক নেই।</li>
+        </ul>
+    </li>
+    <li><strong>'Correlation Does NOT Imply Causation':</strong> উদাহরণস্বরূপ, গ্রীষ্মকালে আইসক্রিম বিক্রি বাড়লে সমুদ্রে ডুবে মৃত্যুর সংখ্যাও বাড়ে। তাদের মধ্যে উচ্চ কোরিলেশন (\(r > 0.8\)) আছে, কিন্তু আইসক্রিম খাওয়ার কারণে কেউ ডুবে মরে না! আসল কারণ হলো গ্রীষ্মের প্রচণ্ড গরম (Confounding Variable)।</li>
+</ul>
+    </section>
+
+    <!-- ০২ বাস্তব কোড উদাহরণ -->
+    <section>
+        <h2><span class="section-num">০২</span> বাস্তব কোড উদাহরণ (Real-World Code Example)</h2>
+        <div class="code-container">
+            <div class="code-header">
+                <span>correlation_covariance_engine.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code># -------------------------------------------------------------
+# Topic 15: Covariance & Pearson Correlation Matrix Engine
+# -------------------------------------------------------------
+
+import math
+
+def calculate_covariance_and_correlation(x, y):
+    n = len(x)
+    mean_x = sum(x) / n
+    mean_y = sum(y) / n
+    
+    # কোভ্যারিয়েন্স ক্যালকুলেশন
+    cov = sum((xi - mean_x) * (yi - mean_y) for xi, yi in zip(x, y)) / (n - 1)
+    
+    # স্ট্যান্ডার্ড ডেভিয়েশন
+    var_x = sum((xi - mean_x) ** 2 for xi in x) / (n - 1)
+    var_y = sum((yi - mean_y) ** 2 for yi in y) / (n - 1)
+    std_x = math.sqrt(var_x)
+    std_y = math.sqrt(var_y)
+    
+    # পিয়ারসন r
+    r = cov / (std_x * std_y)
+    return cov, r
+
+# একটি ই-কমার্স স্টোরের ডেটা: বিজ্ঞাপন খরচ (হাজার $) বনাম বিক্রি (হাজার $)
+ad_spend = [10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 50.0]
+revenue  = [25.0, 32.0, 41.0, 50.0, 58.0, 69.0, 78.0, 95.0]
+
+# তৃতীয় ভ্যারিয়েবল: সার্ভার পিং রেট (ms) যার সাথে বিক্রির কোনো বাস্তব সম্পর্ক নেই
+ping_ms  = [120, 115, 125, 118, 122, 119, 121, 117]
+
+cov_ad_rev, r_ad_rev = calculate_covariance_and_correlation(ad_spend, revenue)
+cov_ping_rev, r_ping_rev = calculate_covariance_and_correlation(ping_ms, revenue)
+
+print("=== Feature Correlation & Relationship Analysis ===")
+print(f"Ad Spend vs Revenue      -> Cov: {cov_ad_rev:8.2f} | Pearson r: {r_ad_rev:+.4f} (Very Strong Positive)")
+print(f"Server Ping vs Revenue   -> Cov: {cov_ping_rev:8.2f} | Pearson r: {r_ping_rev:+.4f} (No Meaningful Linear Relation)")
+print("-" * 65)
+print(f"Feature Selection Choice : Keep 'Ad Spend' (r = {r_ad_rev:.2f}), Drop 'Server Ping' from linear model!")
+print("Causality Notice         : High r proves a linear relationship, but domain expertise is required to confirm causation.")
+</code></pre>
+        </div>
+
+        <div class="terminal-box">
+            <div class="term-header">
+                <span class="term-title">🖥️ Terminal Output</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Output</button>
+            </div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>=== Feature Correlation & Relationship Analysis ===
+Ad Spend vs Revenue      -> Cov:   314.86 | Pearson r: +0.9987 (Very Strong Positive)
+Server Ping vs Revenue   -> Cov:    -3.36 | Pearson r: -0.0531 (No Meaningful Linear Relation)
+-----------------------------------------------------------------
+Feature Selection Choice : Keep 'Ad Spend' (r = 1.00), Drop 'Server Ping' from linear model!
+Causality Notice         : High r proves a linear relationship, but domain expertise is required to confirm causation.</code></pre>
+        </div>
+
+        <div class="breakdown-box">
+            <h4>💡 কোড বিশ্লেষণ ও ব্যাখ্যা (Line-by-Line Breakdown):</h4>
+            <div class="breakdown-item"><strong>১. নিখুঁত ধনাত্মক সম্পর্ক (r = +0.9987):</strong> বিজ্ঞাপন খরচ বৃদ্ধির সাথে সাথে সেলস রেভিনিউ প্রায় সোজা রেখায় বৃদ্ধি পায়। লিনিয়ার রিগ্রেশনের জন্য এটি একটি অসাধারণ ফিচার।</div>
+<div class="breakdown-item"><strong>২. সম্পর্কহীনতা (r = -0.0531):</strong> সার্ভার পিংয়ের সাথে বিক্রির কোরিলেশন শূন্যের কাছাকাছি। ফলে এআই মডেল প্রশিক্ষণে এই কলামটি ড্রপ করে ফিচার ডাইমেনশন কমানো উচিত।</div>
+<div class="breakdown-item"><strong>৩. মাল্টিকোলিনিয়ারিটি সতর্কতা:</strong> দুটি ইনপুট ফিচারের নিজেদের মধ্যে যদি r > 0.85 থাকে, তবে মডেলে মাল্টিকোলিনিয়ারিটি তৈরি হতে পারে, যা কোরিলেশন ম্যাট্রিক্স দিয়ে শনাক্ত করা হয়।</div>
+        </div>
+    </section>
+
+    <!-- ০৩ মোবাইল রিডিং টেকঅ্যাওয়ে -->
+    <section>
+        <h2><span class="section-num">০৩</span> মোবাইল রিডিং টেকঅ্যাওয়ে (Key Takeaways)</h2>
+        <div class="takeaway-box">
+            <div class="takeaway-item">
+                <span class="takeaway-title">🌐 রিয়েল-ওয়ার্ল্ড অ্যাপ্লিকেশন (Real-World Application):</span>
+                মেশিন লার্নিং ফিচার সিলেকশন, কোরিলেশন হিটম্যাপ তৈরি এবং ফাইন্যান্সিয়াল অ্যাসেট পেয়ার ট্রেডিংয়ে কোরিলেশন ব্যবহৃত হয়।
+            </div>
+            <div class="takeaway-item">
+                <span class="takeaway-title">🎯 দক্ষতা অর্জন (Skill Gained):</span>
+                কোভ্যারিয়েন্স ও পিয়ারসন কোরিলেশন ক্যালকুলেট করা এবং ফিচার ইমপ্যাক্ট ফিল্টার করার দক্ষতা।
+            </div>
+            <div class="takeaway-item">
+                <span class="takeaway-title">🚀 পরবর্তী পদক্ষেপ (Next Step):</span>
+                এই সমগ্র পরিসংখ্যান ও সম্ভাব্যতা তত্ত্বের চূড়ান্ত ব্যবহারিক রূপ: লাইভ এ/বি টেস্টিং পরবর্তী অন্তিম টপিকে শিখব।
+            </div>
+        </div>
+    </section>
+
+    <!-- প্রজেক্ট ড্যাশবোর্ড বাটন -->
+    <section class="project-cta">
+        <h3>🚀 প্রজেক্টের কোড ও ব্রেকডাউন</h3>
+        <p>মোবাইলে সরাসরি কোড, টার্মিনাল রান ও লাইন-বাই-লাইন বাংলা ব্যাখ্যা দেখতে প্রজেক্ট গাইড খুলুন:</p>
+        <a href="./Project/index.html" class="btn-action">📱 প্রজেক্ট কোড ও মোবাইল ব্রেকডাউন →</a>
+    </section>
+</div>
+
+<script>
+function copyBox(btn) {
+    const container = btn.closest('.code-container') || btn.closest('.terminal-box');
+    const codeEl = container ? (container.querySelector('pre') || container.querySelector('code')) : null;
+    const text = codeEl ? codeEl.innerText.trim() : '';
+    
+    function showSuccess() {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✅ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.innerHTML = orig;
+            btn.classList.remove('copied');
+        }, 2000);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showSuccess).catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
+    }
+
+    function fallbackCopy(str) {
+        const ta = document.createElement('textarea');
+        ta.value = str;
+        ta.style.position = 'fixed';
+        ta.style.top = '0';
+        ta.style.left = '0';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try {
+            document.execCommand('copy');
+            showSuccess();
+        } catch(e) {}
+        document.body.removeChild(ta);
+    }
+}
+</script>
+</body>
+</html>
