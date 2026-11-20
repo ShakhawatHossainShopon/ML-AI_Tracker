@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>অবজেক্ট ওরিয়েন্টেড প্রোগ্রামিং (OOP Fundamentals)</title>
+    <title>OOP: Classes, Objects & Inheritance for Custom Estimators — অবজেক্ট ওরিয়েন্টেড প্রোগ্রামিং: এআই মডেল ও এস্টিমেটর ডিজাইন</title>
     <style>
 :root {
     --bg: #f8fafc;
@@ -32,56 +32,57 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
     background-color: var(--bg);
     color: var(--text-body);
-    line-height: 1.55;
+    line-height: 1.6;
     padding: 0.75rem 0.6rem;
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     -webkit-font-smoothing: antialiased;
 }
 .container {
-    max-width: 720px;
+    max-width: 760px;
     margin: 0 auto;
 }
 .nav-bar {
     display: flex;
-    gap: 0.4rem;
-    margin-bottom: 0.75rem;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
     flex-wrap: wrap;
 }
 .nav-link {
     display: inline-flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.3rem;
     color: var(--accent);
     text-decoration: none;
     font-weight: 600;
-    font-size: 0.76rem;
-    padding: 0.3rem 0.55rem;
+    font-size: 0.78rem;
+    padding: 0.35rem 0.65rem;
     background: var(--surface);
     border-radius: 6px;
     border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 header {
     background: var(--surface);
     border: 1px solid var(--border);
     border-left: 4px solid var(--accent);
     border-radius: 8px;
-    padding: 0.85rem 1rem;
+    padding: 1.1rem 1rem;
     margin-bottom: 0.85rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 .badge-row {
     display: flex;
-    gap: 0.35rem;
-    margin-bottom: 0.4rem;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
     flex-wrap: wrap;
 }
 .badge {
     background: var(--tag-bg);
     color: var(--tag-text);
-    font-size: 0.68rem;
+    font-size: 0.72rem;
     font-weight: 700;
-    padding: 0.12rem 0.45rem;
+    padding: 0.15rem 0.5rem;
     border-radius: 4px;
-    text-transform: uppercase;
 }
 .badge-success {
     background: var(--success-bg);
@@ -91,89 +92,101 @@ h1 {
     font-size: 1.25rem;
     font-weight: 800;
     color: var(--text-main);
-    margin-bottom: 0.3rem;
-    line-height: 1.25;
+    margin-bottom: 0.4rem;
+    line-height: 1.35;
 }
 .lead {
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
-    line-height: 1.45;
+    line-height: 1.5;
 }
 .card, section {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 0.85rem 1rem;
+    padding: 1rem 1.1rem;
     margin-bottom: 0.85rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 h2 {
-    font-size: 0.98rem;
+    font-size: 1.05rem;
     font-weight: 700;
     color: var(--text-main);
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.75rem;
     display: flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: 0.5rem;
     border-bottom: 1px solid var(--surface-subtle);
-    padding-bottom: 0.35rem;
+    padding-bottom: 0.45rem;
 }
-h2 .step-num, h2 .section-num {
+h2 .section-num {
     background: var(--accent);
     color: #ffffff;
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     font-weight: 800;
-    padding: 0.12rem 0.4rem;
+    padding: 0.15rem 0.45rem;
     border-radius: 4px;
 }
+h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0.85rem 0 0.45rem 0;
+}
 p {
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.75rem;
     color: var(--text-body);
-    font-size: 0.84rem;
-    line-height: 1.5;
+    font-size: 0.88rem;
+    line-height: 1.6;
 }
 ul, ol {
-    margin-bottom: 0.6rem;
-    padding-left: 1.15rem;
+    margin-bottom: 0.85rem;
+    padding-left: 1.35rem;
     color: var(--text-body);
-    font-size: 0.82rem;
+    font-size: 0.86rem;
+    line-height: 1.6;
 }
 li {
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.4rem;
 }
 strong {
     color: var(--text-main);
     font-weight: 700;
 }
 .code-container {
-    margin: 0.55rem 0;
+    margin: 0.75rem 0;
     border-radius: 6px;
     overflow: hidden;
     border: 1px solid #1e293b;
+    position: relative;
 }
 .code-header {
     background: #1e293b;
     color: #94a3b8;
-    padding: 0.25rem 0.55rem;
-    font-size: 0.7rem;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.72rem;
     font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 pre {
     background: var(--code-bg);
     color: var(--code-text);
-    padding: 0.65rem 0.75rem;
+    padding: 0.85rem 1rem;
     overflow-x: auto;
     font-family: "JetBrains Mono", Consolas, monospace;
-    font-size: 0.74rem;
-    line-height: 1.45;
+    font-size: 0.78rem;
+    line-height: 1.5;
     margin: 0;
 }
 code {
     font-family: "JetBrains Mono", Consolas, monospace;
     background: #f1f5f9;
     color: #0f172a;
-    padding: 0.1rem 0.3rem;
-    border-radius: 3px;
-    font-size: 0.76rem;
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
 }
 pre code {
     background: transparent;
@@ -185,94 +198,107 @@ pre code {
     border: 1px solid #1e293b;
     border-left: 3px solid #10b981;
     border-radius: 6px;
-    padding: 0.55rem 0.75rem;
-    margin: 0.55rem 0;
+    padding: 0.75rem 1rem;
+    margin: 0.75rem 0;
     font-family: "JetBrains Mono", Consolas, monospace;
-    font-size: 0.73rem;
+    font-size: 0.76rem;
     color: #38bdf8;
     overflow-x: auto;
-    line-height: 1.4;
+    line-height: 1.45;
+    position: relative;
 }
-.terminal-box .term-title {
+.term-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+.term-title {
     color: #10b981;
     font-weight: bold;
-    font-size: 0.65rem;
-    margin-bottom: 0.25rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 .breakdown-box {
     background: var(--surface-subtle);
     border-radius: 6px;
     border-left: 3px solid var(--accent);
-    padding: 0.7rem 0.85rem;
-    margin: 0.55rem 0;
+    padding: 0.85rem 1rem;
+    margin: 0.75rem 0;
 }
 .breakdown-box h4 {
     color: var(--text-main);
-    font-size: 0.82rem;
-    margin-bottom: 0.35rem;
+    font-size: 0.88rem;
+    margin-bottom: 0.5rem;
     font-weight: 700;
 }
 .breakdown-item {
-    font-size: 0.78rem;
-    margin-bottom: 0.45rem;
-    padding-bottom: 0.45rem;
+    font-size: 0.84rem;
+    margin-bottom: 0.55rem;
+    padding-bottom: 0.55rem;
     border-bottom: 1px dashed var(--border);
-    line-height: 1.45;
+    line-height: 1.55;
 }
 .breakdown-item:last-child {
     margin-bottom: 0;
     padding-bottom: 0;
     border-bottom: none;
 }
-.breakdown-item code {
-    background: #e2e8f0;
-    color: #0f172a;
-    padding: 0.1rem 0.3rem;
-    border-radius: 3px;
-    font-size: 0.74rem;
-    font-weight: 600;
+.takeaway-box {
+    background: var(--accent-light);
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
+    padding: 1rem 1.15rem;
+    margin: 0.85rem 0;
 }
-.callout {
-    border-radius: 6px;
-    padding: 0.65rem 0.85rem;
-    margin: 0.65rem 0;
-    border-left: 3px solid #10b981;
-    background: var(--success-bg);
-    color: var(--success-text);
-    font-size: 0.78rem;
-    line-height: 1.45;
+.takeaway-item {
+    margin-bottom: 0.75rem;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+.takeaway-item:last-child {
+    margin-bottom: 0;
+}
+.takeaway-title {
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.2rem;
 }
 .project-cta {
     background: #ffffff;
     border: 2px dashed var(--accent);
     border-radius: 8px;
-    padding: 1.15rem;
+    padding: 1.25rem 1rem;
     text-align: center;
-    margin-top: 1.15rem;
+    margin-top: 1rem;
+}
+.project-cta h3 {
+    margin-top: 0;
+    font-size: 1.05rem;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+}
+.project-cta p {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    margin-bottom: 0.85rem;
 }
 .btn-action {
     display: inline-block;
     background: var(--accent);
     color: #ffffff;
-    font-weight: 700;
-    padding: 0.65rem 1.25rem;
-    border-radius: 6px;
     text-decoration: none;
-    margin-top: 0.65rem;
-    font-size: 0.82rem;
+    font-weight: 700;
+    font-size: 0.86rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    transition: all 0.2s;
 }
-
-/* ========================================================
-   📋 Code & Terminal Interactive Copy Buttons
-   ======================================================== */
-.code-container, .terminal-box {
-    position: relative;
-}
-.code-header, .term-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.btn-action:hover {
+    background: #1d4ed8;
 }
 .copy-btn {
     display: inline-flex;
@@ -289,8 +315,6 @@ pre code {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     transition: all 0.2s ease;
     user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    z-index: 5;
     line-height: 1.2;
 }
 .copy-btn:hover, .copy-btn:active {
@@ -303,13 +327,7 @@ pre code {
     border-color: #059669 !important;
     color: #ffffff !important;
 }
-.copy-btn-floating {
-    position: absolute;
-    top: 6px;
-    right: 8px;
-}
-
-</style>
+    </style>
 </head>
 <body>
 <div class="container">
@@ -322,25 +340,110 @@ pre code {
             <span class="badge">Phase 01 — Topic 10</span>
             <span class="badge badge-success">Mobile View</span>
         </div>
-        <h1>অবজেক্ট ওরিয়েন্টেড প্রোগ্রামিং (OOP Fundamentals)</h1>
-        <p class="lead">বাস্তব জগতের মডেলিং! ক্লাস, অবজেক্ট, self, মেথড এবং ইনহেরিট্যান্স দিয়ে বড় সফটওয়্যার সাজানোর আর্কিটেকচার।</p>
+        <h1>OOP: Classes, Objects & Inheritance for Custom Estimators — অবজেক্ট ওরিয়েন্টেড প্রোগ্রামিং: এআই মডেল ও এস্টিমেটর ডিজাইন</h1>
+        <p class="lead">PyTorch বা Scikit-learn-এর মতো নিজস্ব কাস্টম মডেল ও লেয়ার ডিজাইন করতে অবজেক্ট ওরিয়েন্টেড প্রোগ্রামিংয়ের বাস্তব প্রয়োগ।</p>
     </header>
     
+    <!-- ০১ থিওরি ও মূল কনসেপ্ট -->
     <section>
-        <h2><span class="section-num">০১</span> ক্লাস বনাম অবজেক্ট</h2>
-        <p>• Class: একটি ব্লুপ্রিন্ট বা নকশা (যেমন: গাড়ি তৈরির ফর্মুলা)।<br>• Object: সেই নকশা থেকে তৈরি বাস্তব উপাদান (যেমন: টয়োটা বা বিএমডব্লিউ গাড়ি)।</p>
+        <h2><span class="section-num">০১</span> থিওরি ও মূল কনসেপ্ট (Theory & Core Concepts)</h2>
+        <h3>মডার্ন এআই ফ্রেমওয়ার্কগুলো কেন ১০০% অবজেক্ট ওরিয়েন্টেড?</h3>
+        
+<p>আপনি যখন Scikit-learn-এ <code>model = LinearRegression()</code> লেখেন অথবা PyTorch-এ <code>class NeuralNet(nn.Module):</code> লেখেন, তখন আপনি অবজেক্ট ওরিয়েন্টেড প্রোগ্রামিং (OOP) ব্যবহার করছেন। এআই মডেলে স্টেট (ওজন ও বায়াস) এবং বিহেভিয়ার (ফরওয়ার্ড পাস ও প্রেডিকশন) একসাথে এনক্যাপসুলেট করার জন্য OOP ছাড়া আর কোনো বিকল্প নেই:</p>
+<ul>
+    <li><strong>Class & Object:</strong> ক্লাস হলো একটি ব্লুপ্রিন্ট (নকশা), আর অবজেক্ট হলো সেই ব্লুপ্রিন্ট থেকে তৈরি সক্রিয় মডেল ইনস্ট্যান্স। যেমন: একটি ক্লাসে <code>fit()</code> ও <code>predict()</code> মেথড থাকে।</li>
+    <li><strong>Constructor (__init__):</strong> মডেলের হাইপারপ্যারামিটার (যেমন: লার্নিং রেট বা লেয়ার ডাইমেনশন) ইনিশিয়ালাইজ করতে এবং <code>self.weights</code> মেমরিতে বরাদ্দ করতে <code>__init__</code> ব্যবহার হয়।</li>
+    <li><strong>Inheritance (উত্তরাধিকার):</strong> একটি সাধারণ <code>BaseEstimator</code> ক্লাস থেকে ইনহেরিট করে একাধিক স্পেশালাইজড মডেল (যেমন: <code>LinearModel</code>, <code>LogisticModel</code>) তৈরি করা যায়। এতে কমন কোড বারবার লিখতে হয় না।</li>
+    <li><strong>Polymorphism (বহুরূপিতা):</strong> প্রতিটি মডেল ক্লাসে একই নামের <code>predict(X)</code> মেথড থাকে, যার ফলে পাইপলাইনে এক মডেলের জায়গায় আরেক মডেলকে সহজে প্লাগ-ইন করা যায়।</li>
+</ul>
+<p><strong>সেলফ (self) কী?</strong> <code>self</code> হলো ক্লাসের ভেতরে ওই অবজেক্টটির নিজস্ব রেফারেন্স, যা দিয়ে অবজেক্টটি তার নিজের ওজন (Weights) মনে রাখে।</p>
+
     </section>
 
+    <!-- ০২ বাস্তব কোড উদাহরণ -->
     <section>
-        <h2><span class="section-num">০২</span> self এবং __init__</h2>
-        <p><code>__init__</code> হলো কনস্ট্রাক্টর যা অবজেক্ট তৈরির সময় প্রাথমিক মান সেট করে। <code>self</code> মানে ঐ নির্দিষ্ট অবজেক্টের নিজস্ব প্রপার্টি।</p>
+        <h2><span class="section-num">০২</span> বাস্তব কোড উদাহরণ (Real-World Code Example)</h2>
+        <div class="code-container">
+            <div class="code-header">
+                <span>custom_estimator.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code># অবজেক্ট ওরিয়েন্টেড এআই এস্টিমেটর ডিজাইন
+class BaseEstimator:
+    '''সমস্ত এআই মডেলের সাধারণ প্যারেন্ট ক্লাস'''
+    def __init__(self, model_name: str):
+        self.model_name = model_name
+        self.is_fitted = False
+
+    def get_status(self) -> str:
+        return f"{self.model_name} [Fitted: {self.is_fitted}]"
+
+class SimpleLinearRegression(BaseEstimator):
+    '''প্যারেন্ট ক্লাস ইনহেরিট করে তৈরি লিনিয়ার মডেল'''
+    def __init__(self, slope: float = 2.0, intercept: float = 1.0):
+        super().__init__("LinearRegressionModel")
+        self.weight = slope
+        self.bias = intercept
+
+    def fit(self, x_train: list, y_train: list):
+        # ট্রেনিং সম্পন্ন করার ডেমো ফ্ল্যাগ
+        self.is_fitted = True
+        print(f"[{self.model_name}] ট্রেনিং সম্পন্ন! Weight: {self.weight}, Bias: {self.bias}")
+
+    def predict(self, x_input: float) -> float:
+        if not self.is_fitted:
+            raise RuntimeError("মডেলটি আগে fit() করতে হবে!")
+        return (self.weight * x_input) + self.bias
+
+# মডেল ইনস্ট্যানশিয়েশন ও প্রেডিকশন
+model = SimpleLinearRegression(slope=3.5, intercept=2.0)
+print("Initial Status :", model.get_status())
+model.fit([1, 2, 3], [5.5, 9.0, 12.5])
+prediction = model.predict(4.0)
+print(f"Prediction for x=4.0 -> y = {prediction:.2f}")</code></pre>
+        </div>
+
+        <div class="terminal-box">
+            <div class="term-header">
+                <span class="term-title">🖥️ Terminal Output</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Output</button>
+            </div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>Initial Status : LinearRegressionModel [Fitted: False]
+[LinearRegressionModel] ট্রেনিং সম্পন্ন! Weight: 3.5, Bias: 2.0
+Prediction for x=4.0 -> y = 16.00</code></pre>
+        </div>
+
+        <div class="breakdown-box">
+            <h4>💡 কোড বিশ্লেষণ ও ব্যাখ্যা (Line-by-Line Breakdown):</h4>
+            
+<div class="breakdown-item"><code>class BaseEstimator</code>: প্যারেন্ট ক্লাস তৈরি করা হয়েছে যা সব মডেলের সাধারণ স্ট্যাটাস ধারণ করে।</div>
+<div class="breakdown-item"><code>super().__init__(...)</code>: চাইল্ড ক্লাসে প্যারেন্ট ক্লাসের কনস্ট্রাক্টর কল করে নাম ইনিশিয়ালাইজ করা হয়েছে।</div>
+<div class="breakdown-item"><code>self.weight, self.bias</code>: অবজেক্টের নিজস্ব অভ্যন্তরীণ মেমরিতে মডেলের প্যারামিটার সংরক্ষণ করা হয়েছে।</div>
+<div class="breakdown-item"><code>model.predict(4.0)</code>: অবজেক্ট মেথড কল করে লিনিয়ার ইকুয়েশন ($y = wx + b$) অনুযায়ী প্রেডিকশন ক্যালকুলেট করা হয়েছে।</div>
+
+        </div>
     </section>
 
+    <!-- ০৩ মোবাইল রিডিং টেকঅ্যাওয়ে -->
     <section>
-        <h2><span class="section-num">০৩</span> ইনহেরিট্যান্স (Inheritance)</h2>
-        <p>প্যারেন্ট ক্লাসের সব গুণাবলী চাইল্ড ক্লাসে রি-ইউজ করা। যেমন: সাধারণ <code>User</code> ক্লাস থেকে <code>AdminUser</code> তৈরি করা।</p>
+        <h2><span class="section-num">০৩</span> মোবাইল রিডিং টেকঅ্যাওয়ে (Key Takeaways)</h2>
+        <div class="takeaway-box">
+            <div class="takeaway-item">
+                <span class="takeaway-title">🌐 রিয়েল-ওয়ার্ল্ড অ্যাপ্লিকেশন (Real-World Application):</span>
+                PyTorch কাস্টম নিউরাল নেটওয়ার্ক মডিউল (Custom Layer/Block) তৈরি এবং Scikit-learn কমপ্লায়েন্ট পাইপলাইন ক্লাস ডিজাইন।
+            </div>
+            <div class="takeaway-item">
+                <span class="takeaway-title">🎯 দক্ষতা অর্জন (Skill Gained):</span>
+                ক্লাস, অবজেক্ট, কনস্ট্রাক্টর, মেথড ওভাররাইডিং ও ইনহেরিটেন্সের পূর্ণাঙ্গ অবজেক্ট ওরিয়েন্টেড ডিজাইন ক্ষমতা।
+            </div>
+            <div class="takeaway-item">
+                <span class="takeaway-title">🚀 পরবর্তী পদক্ষেপ (Next Step):</span>
+                নিচের বাটনে ট্যাপ করে অবজেক্ট ওরিয়েন্টেড প্রোগ্রামিংয়ের প্রজেক্ট ল্যাব ড্যাশবোর্ডে গিয়ে সম্পূর্ণ কোড ওয়াকথ্রু দেখে নিন।
+            </div>
+        </div>
     </section>
 
+    <!-- প্রজেক্ট ড্যাশবোর্ড বাটন -->
     <section class="project-cta">
         <h3>🚀 প্রজেক্টের কোড ও ব্রেকডাউন</h3>
         <p>মোবাইলে সরাসরি কোড, টার্মিনাল রান ও লাইন-বাই-লাইন বাংলা ব্যাখ্যা দেখতে প্রজেক্ট গাইড খুলুন:</p>
@@ -349,21 +452,23 @@ pre code {
 </div>
 
 <script>
-function copyTextToClipboard(text, btn) {
+function copyBox(btn) {
+    const container = btn.closest('.code-container') || btn.closest('.terminal-box');
+    const codeEl = container ? (container.querySelector('pre') || container.querySelector('code')) : null;
+    const text = codeEl ? codeEl.innerText.trim() : '';
+    
     function showSuccess() {
-        const originalHTML = btn.innerHTML;
+        const orig = btn.innerHTML;
         btn.innerHTML = '✅ Copied!';
         btn.classList.add('copied');
         setTimeout(() => {
-            btn.innerHTML = originalHTML;
+            btn.innerHTML = orig;
             btn.classList.remove('copied');
         }, 2000);
     }
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(showSuccess).catch(() => {
-            fallbackCopy(text);
-        });
+        navigator.clipboard.writeText(text).then(showSuccess).catch(() => fallbackCopy(text));
     } else {
         fallbackCopy(text);
     }
@@ -381,94 +486,10 @@ function copyTextToClipboard(text, btn) {
         try {
             document.execCommand('copy');
             showSuccess();
-        } catch (e) {
-            console.error('Copy failed:', e);
-        }
+        } catch(e) {}
         document.body.removeChild(ta);
     }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Code Containers
-    document.querySelectorAll('.code-container').forEach(container => {
-        if (container.querySelector('.copy-btn')) return;
-        const header = container.querySelector('.code-header');
-        const pre = container.querySelector('pre');
-        if (!pre) return;
-
-        const btn = document.createElement('button');
-        btn.className = 'copy-btn';
-        btn.setAttribute('type', 'button');
-        btn.innerHTML = '📋 Copy Code';
-        btn.onclick = () => copyTextToClipboard(pre.innerText.trim(), btn);
-
-        if (header) {
-            header.style.display = 'flex';
-            header.style.justifyContent = 'space-between';
-            header.style.alignItems = 'center';
-            header.appendChild(btn);
-        } else {
-            container.style.position = 'relative';
-            btn.classList.add('copy-btn-floating');
-            container.appendChild(btn);
-        }
-    });
-
-    // 2. Terminal Boxes
-    document.querySelectorAll('.terminal-box').forEach(box => {
-        if (box.querySelector('.copy-btn')) return;
-        box.style.position = 'relative';
-
-        const btn = document.createElement('button');
-        btn.className = 'copy-btn';
-        btn.setAttribute('type', 'button');
-        btn.innerHTML = '📋 Copy Output';
-        
-        btn.onclick = () => {
-            const preOrCode = box.querySelector('pre') || box.querySelector('code');
-            const clone = (preOrCode || box).cloneNode(true);
-            const internalTitle = clone.querySelector('.term-title');
-            if (internalTitle) internalTitle.remove();
-            const internalBtn = clone.querySelector('.copy-btn');
-            if (internalBtn) internalBtn.remove();
-            copyTextToClipboard(clone.innerText.trim(), btn);
-        };
-
-        const title = box.querySelector('.term-title');
-        if (title) {
-            const header = document.createElement('div');
-            header.className = 'term-header';
-            header.style.display = 'flex';
-            header.style.justifyContent = 'space-between';
-            header.style.alignItems = 'center';
-            header.style.marginBottom = '0.35rem';
-            title.parentNode.insertBefore(header, title);
-            header.appendChild(title);
-            header.appendChild(btn);
-        } else {
-            btn.classList.add('copy-btn-floating');
-            box.appendChild(btn);
-        }
-    });
-
-    // 3. Standalone <pre> elements (not inside .code-container or .terminal-box)
-    document.querySelectorAll('pre').forEach(pre => {
-        if (pre.closest('.code-container') || pre.closest('.terminal-box') || pre.parentElement.querySelector('.copy-btn')) return;
-        
-        const wrapper = document.createElement('div');
-        wrapper.style.position = 'relative';
-        pre.parentNode.insertBefore(wrapper, pre);
-        wrapper.appendChild(pre);
-
-        const btn = document.createElement('button');
-        btn.className = 'copy-btn copy-btn-floating';
-        btn.setAttribute('type', 'button');
-        btn.innerHTML = '📋 Copy';
-        btn.onclick = () => copyTextToClipboard(pre.innerText.trim(), btn);
-        wrapper.appendChild(btn);
-    });
-});
 </script>
-
 </body>
 </html>
