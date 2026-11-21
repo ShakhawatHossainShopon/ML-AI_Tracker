@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chi-Square Test (Goodness of Fit & Independence) — কাই-স্কোয়ার টেস্ট: ক্যাটাগরিক্যাল স্বাধীনতা ও গুডনেস অব ফিট পরীক্ষা</title>
+    <style>
+:root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-subtle: #f1f5f9;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --text-main: #0f172a;
+    --text-body: #334155;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --tag-bg: #e0f2fe;
+    --tag-text: #0369a1;
+    --success-bg: #ecfdf5;
+    --success-text: #065f46;
+    --code-bg: #090d16;
+    --code-text: #f8fafc;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+    background-color: var(--bg);
+    color: var(--text-body);
+    line-height: 1.6;
+    padding: 0.75rem 0.6rem;
+    font-size: 0.9rem;
+    -webkit-font-smoothing: antialiased;
+}
+.container {
+    max-width: 760px;
+    margin: 0 auto;
+}
+.nav-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+    flex-wrap: wrap;
+}
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.78rem;
+    padding: 0.35rem 0.65rem;
+    background: var(--surface);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 1.1rem 1rem;
+    margin-bottom: 0.85rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+.badge-row {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+.badge {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+}
+.badge-success {
+    background: var(--success-bg);
+    color: var(--success-text);
+}
+h1 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+    line-height: 1.35;
+}
+.lead {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+.card, section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.85rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--surface-subtle);
+    padding-bottom: 0.45rem;
+}
+h2 .section-num {
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+}
+h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0.85rem 0 0.45rem 0;
+}
+p {
+    margin-bottom: 0.75rem;
+    color: var(--text-body);
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+ul, ol {
+    margin-bottom: 0.85rem;
+    padding-left: 1.35rem;
+    color: var(--text-body);
+    font-size: 0.86rem;
+    line-height: 1.6;
+}
+li {
+    margin-bottom: 0.4rem;
+}
+strong {
+    color: var(--text-main);
+    font-weight: 700;
+}
+.code-container {
+    margin: 0.75rem 0;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #1e293b;
+    position: relative;
+}
+.code-header {
+    background: #1e293b;
+    color: #94a3b8;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.85rem 1rem;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    margin: 0;
+}
+code {
+    font-family: "JetBrains Mono", Consolas, monospace;
+    background: #f1f5f9;
+    color: #0f172a;
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+.terminal-box {
+    background: #050811;
+    border: 1px solid #1e293b;
+    border-left: 3px solid #10b981;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    margin: 0.75rem 0;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.76rem;
+    color: #38bdf8;
+    overflow-x: auto;
+    line-height: 1.45;
+    position: relative;
+}
+.term-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+.term-title {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.breakdown-box {
+    background: var(--surface-subtle);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+    padding: 0.85rem 1rem;
+    margin: 0.75rem 0;
+}
+.breakdown-box h4 {
+    color: var(--text-main);
+    font-size: 0.88rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+.breakdown-item {
+    font-size: 0.84rem;
+    margin-bottom: 0.55rem;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px dashed var(--border);
+    line-height: 1.55;
+}
+.breakdown-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.takeaway-box {
+    background: var(--accent-light);
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
+    padding: 1rem 1.15rem;
+    margin: 0.85rem 0;
+}
+.takeaway-item {
+    margin-bottom: 0.75rem;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+.takeaway-item:last-child {
+    margin-bottom: 0;
+}
+.takeaway-title {
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.2rem;
+}
+.project-cta {
+    background: #ffffff;
+    border: 2px dashed var(--accent);
+    border-radius: 8px;
+    padding: 1.25rem 1rem;
+    text-align: center;
+    margin-top: 1rem;
+}
+.project-cta h3 {
+    margin-top: 0;
+    font-size: 1.05rem;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+}
+.project-cta p {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    margin-bottom: 0.85rem;
+}
+.btn-action {
+    display: inline-block;
+    background: var(--accent);
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.86rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    transition: all 0.2s;
+}
+.btn-action:hover {
+    background: #1d4ed8;
+}
+.copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    transition: all 0.2s ease;
+    user-select: none;
+    line-height: 1.2;
+}
+.copy-btn:hover, .copy-btn:active {
+    background: rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.45);
+}
+.copy-btn.copied {
+    background: #10b981 !important;
+    border-color: #059669 !important;
+    color: #ffffff !important;
+}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="nav-bar">
+        <a href="../../index.html" class="nav-link">🏠 মাস্টার সিলেবাস</a>
+        <a href="../../../../index.html" class="nav-link">📋 ট্র্যাকার</a>
+    </div>
+    <header>
+        <div class="badge-row">
+            <span class="badge">Phase 03: Topic 18</span>
+            <span class="badge badge-success">Mobile View</span>
+        </div>
+        <h1>Chi-Square Test (Goodness of Fit & Independence) — কাই-স্কোয়ার টেস্ট: ক্যাটাগরিক্যাল স্বাধীনতা ও গুডনেস অব ফিট পরীক্ষা</h1>
+        <p class="lead">গুণগত বা ক্যাটাগরিকাল ডেটায় দুটি বৈশিষ্ট্যের মধ্যে সম্পর্ক রয়েছে নাকি তারা পরস্পর স্বাধীন—কনটিনজেন্সি টেবিল ও কাই-স্কোয়ার (χ²) বিশ্লেষণ।</p>
+    </header>
+    
+    <!-- ০১ থিওরি ও মূল কনসেপ্ট -->
+    <section>
+        <h2><span class="section-num">০১</span> থিওরি ও মূল কনসেপ্ট (Theory & Core Concepts)</h2>
+        <h3>কাই-স্কোয়ার (Chi-Square) টেস্ট কেন ডেটা সায়েন্সে অপরিহার্য?</h3>
+        <p>সংখ্যাসূচক (Continuous) ডেটায় আমরা t-টেস্ট বা ANOVA ব্যবহার করি, কিন্তু ক্যাটাগরিক্যাল ডেটার ক্ষেত্রে (যেমন: গ্রাহকের ডিভাইস টাইপ বনাম কেনাকাটার সিদ্ধান্ত) কীভাবে বুঝব যে তাদের মধ্যে কোনো তাৎপর্যপূর্ণ সম্পর্ক আছে নাকি এটি নিছক কাকতালীয়? এর উত্তর দেয় <strong>কাই-স্কোয়ার টেস্ট (\(\chi^2\) Test)</strong>।</p>
+<ul>
+    <li><strong>কাই-স্কোয়ার টেস্টের প্রধান দুই প্রকার:</strong>
+        <ol>
+            <li><strong>গুডনেস অব ফিট (Goodness of Fit Test):</strong> সংগৃহীত স্যাম্পল ডেটা কোনো তাত্ত্বিক প্রত্যাশিত বিন্যাস মেনে চলে কিনা তা পরীক্ষা করা।</li>
+            <li><strong>টেস্ট অব ইন্ডিপেন্ডেন্স (Test of Independence):</strong> দুটি ক্যাটাগরিক্যাল চলক (Variables) একে অপরের ওপর নির্ভরশীল নাকি সম্পূর্ণ স্বাধীন তা যাচাই করা।</li>
+        </ol>
+    </li>
+    <li><strong>কাই-স্কোয়ার সমীকরণ:</strong>
+        <br><code>&chi;^2 = &sum; [ (O - E)^2 / E ]</code>
+        <br>যেখানে \(O\) হলো <strong>Observed Frequency</strong> (বাস্তব পর্যবেক্ষণ) এবং \(E\) হলো <strong>Expected Frequency</strong> (প্রত্যাশিত ফ্রিকোয়েন্সি)।</li>
+    <li><strong>প্রত্যাশিত মান নির্ণয় (Contingency Table):</strong>
+        <br><code>E = (Row Total * Column Total) / Grand Total</code>
+    </li>
+    <li><strong>ডিগ্রি অব ফ্রিডম (Degrees of Freedom):</strong>
+        <br><code>df = (Rows - 1) * (Columns - 1)</code>
+    </li>
+    <li><strong>সিদ্ধান্ত গ্রহণ:</strong> যদি পর্যবেক্ষিত ও প্রত্যাশিত মানের পার্থক্য খুব বড় হয়, তবে \(\chi^2\) এর মান বৃদ্ধি পায়। \(\chi^2\) মান সংকটকালীন সীমার চেয়ে বড় হলে এবং \(p \le 0.05\) হলে নাল হাইপোথিসিস বাতিল করে প্রমাণ হয় যে চলক দুটি পরস্পর নির্ভরশীল!</li>
+</ul>
+    </section>
+
+    <!-- ০২ বাস্তব কোড উদাহরণ -->
+    <section>
+        <h2><span class="section-num">০২</span> বাস্তব কোড উদাহরণ (Real-World Code Example)</h2>
+        <div class="code-container">
+            <div class="code-header">
+                <span>chi_square_independence_test.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code># -------------------------------------------------------------
+# Topic 18: Chi-Square Test of Independence from Scratch
+# -------------------------------------------------------------
+
+import math
+
+def run_chi_square_independence(observed_matrix):
+    """
+    observed_matrix: 2D লিস্ট [সারি][কলাম]
+    """
+    n_rows = len(observed_matrix)
+    n_cols = len(observed_matrix[0])
+    
+    row_totals = [sum(row) for row in observed_matrix]
+    col_totals = [sum(observed_matrix[r][c] for r in range(n_rows)) for c in range(n_cols)]
+    grand_total = sum(row_totals)
+    
+    chi2_stat = 0.0
+    expected_matrix = []
+    
+    for r in range(n_rows):
+        exp_row = []
+        for c in range(n_cols):
+            exp_val = (row_totals[r] * col_totals[c]) / grand_total
+            exp_row.append(exp_val)
+            obs_val = observed_matrix[r][c]
+            chi2_stat += ((obs_val - exp_val) ** 2) / exp_val
+        expected_matrix.append(exp_row)
+        
+    df = (n_rows - 1) * (n_cols - 1)
+    
+    # df=1 এবং alpha=0.05 এর জন্য ক্রিটিক্যাল মান = 3.841
+    # df=2 হলে 5.991
+    critical_value = 3.841 if df == 1 else 5.991
+    is_significant = chi2_stat > critical_value
+    
+    return chi2_stat, df, critical_value, is_significant, expected_matrix
+
+# একটি ই-কমার্স কনটিনজেন্সি টেবিল:
+# ডিভাইস টাইপ (Mobile vs Desktop) বনাম সাবস্ক্রিপশন (Purchased vs Did Not Purchase)
+#             Purchased    Did Not Buy
+# Mobile:       120            380        (Total 500)
+# Desktop:      180            320        (Total 500)
+observed = [
+    [120, 380], # Mobile
+    [180, 320]  # Desktop
+]
+
+chi2, df, crit, sig, expected = run_chi_square_independence(observed)
+
+print("=== Chi-Square Test of Independence (Device vs Conversion) ===")
+print("Observed Frequencies  : Mobile [120, 380] | Desktop [180, 320]")
+print(f"Expected Frequencies  : Mobile [{expected[0][0]:.1f}, {expected[0][1]:.1f}] | Desktop [{expected[1][0]:.1f}, {expected[1][1]:.1f}]")
+print("-" * 65)
+print(f"Degrees of Freedom (df): {df} (1 row factor x 1 col factor)")
+print(f"Chi-Square Stat (χ²)   : {chi2:.4f}")
+print(f"Critical Value (α=0.05): {crit:.3f}")
+print(f"Statistical Decision   : {'REJECT H0 (Dependent Relationship!)' if sig else 'FAIL TO REJECT H0 (Independent)'}")
+print("-" * 65)
+print("Product Conclusion    : Purchase behavior depends significantly on device! Desktop has higher conversion.")
+</code></pre>
+        </div>
+
+        <div class="terminal-box">
+            <div class="term-header">
+                <span class="term-title">🖥️ Terminal Output</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Output</button>
+            </div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>=== Chi-Square Test of Independence (Device vs Conversion) ===
+Observed Frequencies  : Mobile [120, 380] | Desktop [180, 320]
+Expected Frequencies  : Mobile [150.0, 350.0] | Desktop [150.0, 350.0]
+-----------------------------------------------------------------
+Degrees of Freedom (df): 1 (1 row factor x 1 col factor)
+Chi-Square Stat (χ²)   : 17.1429
+Critical Value (α=0.05): 3.841
+Statistical Decision   : REJECT H0 (Dependent Relationship!)
+-----------------------------------------------------------------
+Product Conclusion    : Purchase behavior depends significantly on device! Desktop has higher conversion.</code></pre>
+        </div>
+
+        <div class="breakdown-box">
+            <h4>💡 কোড বিশ্লেষণ ও ব্যাখ্যা (Line-by-Line Breakdown):</h4>
+            <div class="breakdown-item"><strong>১. নাল হাইপোথিসিস (H0):</strong> ডিভাইস টাইপ এবং কেনাকাটার সিদ্ধান্তের মধ্যে কোনো সম্পর্ক নেই (তারা স্বাধীন)।</div>
+<div class="breakdown-item"><strong>২. প্রত্যাশিত মান (১৫০ ও ৩৫০):</strong> উভয় ডিভাইসে সমানুপাতিক আচরণ হলে প্রতিটিতে ১৫০ জন কেনাকাটা করার কথা ছিল। কিন্তু মোবাইলে মাত্র ১২০ জন এবং ডেসকটপে ১৮০ জন কেনাকাটা করেছে।</div>
+<div class="breakdown-item"><strong>৩. কাই-স্কোয়ার স্ট্যাট (১৭.১৪):</strong> টেস্ট স্ট্যাটিস্টিক ১৭.১৪ সংকটকালীন সীমা ৩.৮৪১ এর চেয়ে অনেক বড়! ফলে H0 সম্পূর্ণ বাতিল হয়ে প্রমাণিত হয়েছে যে ডিভাইস টাইপ রূপান্তরের সাথে গভীরভাবে জড়িত।</div>
+        </div>
+    </section>
+
+    <!-- ০৩ মোবাইল রিডিং টেকঅ্যাওয়ে -->
+    <section>
+        <h2><span class="section-num">০৩</span> মোবাইল রিডিং টেকঅ্যাওয়ে (Key Takeaways)</h2>
+        <div class="takeaway-box">
+            <div class="takeaway-item">
+                <span class="takeaway-title">🌐 রিয়েল-ওয়ার্ল্ড অ্যাপ্লিকেশন (Real-World Application):</span>
+                ক্যাটাগরিক্যাল ফিচার সিলেকশন (SelectKBest chi2), ইউজার সেগমেন্ট অ্যানালাইসিস এবং সার্ভে রেসপন্স নির্ভরতা পরীক্ষায় কাই-স্কোয়ার টেস্ট ব্যবহৃত হয়।
+            </div>
+            <div class="takeaway-item">
+                <span class="takeaway-title">🎯 দক্ষতা অর্জন (Skill Gained):</span>
+                কনটিনজেন্সি টেবিল তৈরি, এক্সপেক্টেড ফ্রিকোয়েন্সি গণনা এবং কাই-স্কোয়ার টেস্ট স্ট্যাটিস্টিক বিশ্লেষণ করার দক্ষতা।
+            </div>
+            <div class="takeaway-item">
+                <span class="takeaway-title">🚀 পরবর্তী পদক্ষেপ (Next Step):</span>
+                ফেজ ০৩ প্রোবাবিলিটি ও স্ট্যাটিস্টিক্সের সকল ১৮টি টপিক সম্পূর্ণ হয়েছে! পরবর্তী ফেজ ০৪ এ হাই-পারফরম্যান্স নামপাই (NumPy) ডেটা সায়েন্স শুরু করার জন্য অভিনন্দন!
+            </div>
+        </div>
+    </section>
+
+    <!-- প্রজেক্ট ড্যাশবোর্ড বাটন -->
+    <section class="project-cta">
+        <h3>🚀 প্রজেক্টের কোড ও ব্রেকডাউন</h3>
+        <p>মোবাইলে সরাসরি কোড, টার্মিনাল রান ও লাইন-বাই-লাইন বাংলা ব্যাখ্যা দেখতে প্রজেক্ট গাইড খুলুন:</p>
+        <a href="./Project/index.html" class="btn-action">📱 প্রজেক্ট কোড ও মোবাইল ব্রেকডাউন →</a>
+    </section>
+</div>
+
+<script>
+function copyBox(btn) {
+    const container = btn.closest('.code-container') || btn.closest('.terminal-box');
+    const codeEl = container ? (container.querySelector('pre') || container.querySelector('code')) : null;
+    const text = codeEl ? codeEl.innerText.trim() : '';
+    
+    function showSuccess() {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✅ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.innerHTML = orig;
+            btn.classList.remove('copied');
+        }, 2000);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showSuccess).catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
+    }
+
+    function fallbackCopy(str) {
+        const ta = document.createElement('textarea');
+        ta.value = str;
+        ta.style.position = 'fixed';
+        ta.style.top = '0';
+        ta.style.left = '0';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try {
+            document.execCommand('copy');
+            showSuccess();
+        } catch(e) {}
+        document.body.removeChild(ta);
+    }
+}
+</script>
+</body>
+</html>

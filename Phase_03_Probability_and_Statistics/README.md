@@ -17,6 +17,8 @@
 - [x] [14. P-values and statistical significance](./Topics/14_P_Values_and_Statistical_Significance/index.html)
 - [x] [15. Correlation and covariance](./Topics/15_Correlation_and_Covariance/index.html)
 - [x] [16. A/B testing](./Topics/16_AB_Testing/index.html)
+- [x] [17. Z-Score and standardization](./Topics/17_Z_Score_and_Standardization/index.html)
+- [x] [18. Chi-square test](./Topics/18_Chi_Square_Test/index.html)
 
 ## 🚀 Capstone Project in this Phase
 - [Project_03_Build_a_Bayesian_Spam_Classifier](./Projects/Project_03_Build_a_Bayesian_Spam_Classifier/): **AI Capstone:** Build a Bayesian Spam Classifier
