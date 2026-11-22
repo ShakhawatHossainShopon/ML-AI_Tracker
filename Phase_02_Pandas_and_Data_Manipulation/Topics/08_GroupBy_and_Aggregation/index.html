@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GroupBy Operations & Multi-Aggregation — গ্রুপবাই অপারেশন ও বহুবিধ অ্যাগ্রিগেশন (Split-Apply-Combine)</title>
+    <style>
+:root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-subtle: #f1f5f9;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --text-main: #0f172a;
+    --text-body: #334155;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --tag-bg: #e0f2fe;
+    --tag-text: #0369a1;
+    --success-bg: #ecfdf5;
+    --success-text: #065f46;
+    --code-bg: #090d16;
+    --code-text: #f8fafc;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+    background-color: var(--bg);
+    color: var(--text-body);
+    line-height: 1.6;
+    padding: 0.75rem 0.6rem;
+    font-size: 0.9rem;
+    -webkit-font-smoothing: antialiased;
+}
+.container {
+    max-width: 760px;
+    margin: 0 auto;
+}
+.nav-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+    flex-wrap: wrap;
+}
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.78rem;
+    padding: 0.35rem 0.65rem;
+    background: var(--surface);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 1.1rem 1rem;
+    margin-bottom: 0.85rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+.badge-row {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+.badge {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+}
+.badge-success {
+    background: var(--success-bg);
+    color: var(--success-text);
+}
+h1 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+    line-height: 1.35;
+}
+.lead {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+.card, section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.85rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--surface-subtle);
+    padding-bottom: 0.45rem;
+}
+h2 .section-num {
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+}
+h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0.85rem 0 0.45rem 0;
+}
+p {
+    margin-bottom: 0.75rem;
+    color: var(--text-body);
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+ul, ol {
+    margin-bottom: 0.85rem;
+    padding-left: 1.35rem;
+    color: var(--text-body);
+    font-size: 0.86rem;
+    line-height: 1.6;
+}
+li {
+    margin-bottom: 0.4rem;
+}
+strong {
+    color: var(--text-main);
+    font-weight: 700;
+}
+.code-container {
+    margin: 0.75rem 0;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #1e293b;
+    position: relative;
+}
+.code-header {
+    background: #1e293b;
+    color: #94a3b8;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.85rem 1rem;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    margin: 0;
+}
+code {
+    font-family: "JetBrains Mono", Consolas, monospace;
+    background: #f1f5f9;
+    color: #0f172a;
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+.terminal-box {
+    background: #050811;
+    border: 1px solid #1e293b;
+    border-left: 3px solid #10b981;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    margin: 0.75rem 0;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.76rem;
+    color: #38bdf8;
+    overflow-x: auto;
+    line-height: 1.45;
+    position: relative;
+}
+.term-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+.term-title {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.breakdown-box {
+    background: var(--surface-subtle);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+    padding: 0.85rem 1rem;
+    margin: 0.75rem 0;
+}
+.breakdown-box h4 {
+    color: var(--text-main);
+    font-size: 0.88rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+.breakdown-item {
+    font-size: 0.84rem;
+    margin-bottom: 0.55rem;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px dashed var(--border);
+    line-height: 1.55;
+}
+.breakdown-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.takeaway-box {
+    background: var(--accent-light);
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
+    padding: 1rem 1.15rem;
+    margin: 0.85rem 0;
+}
+.takeaway-item {
+    margin-bottom: 0.75rem;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+.takeaway-item:last-child {
+    margin-bottom: 0;
+}
+.takeaway-title {
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.2rem;
+}
+.project-cta {
+    background: #ffffff;
+    border: 2px dashed var(--accent);
+    border-radius: 8px;
+    padding: 1.25rem 1rem;
+    text-align: center;
+    margin-top: 1rem;
+}
+.project-cta h3 {
+    margin-top: 0;
+    font-size: 1.05rem;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+}
+.project-cta p {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    margin-bottom: 0.85rem;
+}
+.btn-action {
+    display: inline-block;
+    background: var(--accent);
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.86rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    transition: all 0.2s;
+}
+.btn-action:hover {
+    background: #1d4ed8;
+}
+.copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    transition: all 0.2s ease;
+    user-select: none;
+    line-height: 1.2;
+}
+.copy-btn:hover, .copy-btn:active {
+    background: rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.45);
+}
+.copy-btn.copied {
+    background: #10b981 !important;
+    border-color: #059669 !important;
+    color: #ffffff !important;
+}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="nav-bar">
+        <a href="../../index.html" class="nav-link">🏠 মাস্টার সিলেবাস</a>
+        <a href="../../../../index.html" class="nav-link">📋 ট্র্যাকার</a>
+    </div>
+    <header>
+        <div class="badge-row">
+            <span class="badge">Phase 02 • Topic 08</span>
+            <span class="badge badge-success">Mobile View</span>
+        </div>
+        <h1>GroupBy Operations & Multi-Aggregation — গ্রুপবাই অপারেশন ও বহুবিধ অ্যাগ্রিগেশন (Split-Apply-Combine)</h1>
+        <p class="lead">SQL GROUP BY-এর আধুনিক রূপ। Split-Apply-Combine প্যারাডাইম, agg() দিয়ে কাস্টম মাল্টি-ফাংশন অ্যাগ্রিগেশন, transform() দিয়ে গ্রুপ-নরমালাইজেশন এবং filter() মেথড।</p>
+    </header>
+    
+    <!-- ০১ থিওরি ও মূল কনসেপ্ট -->
+    <section>
+        <h2><span class="section-num">০১</span> থিওরি ও মূল কনসেপ্ট (Theory & Core Concepts)</h2>
+        <h3>Split-Apply-Combine কৌশল ও গ্রুপ ম্যাথমেটিক্স</h3>
+        <p><strong>GroupBy</strong> হলো ডেটা বিশ্লেষণের সবচেয়ে শক্তিশালী কৌশল। এটি ৩টি ধাপে কাজ করে:
+  <br>১. <strong>Split:</strong> কোনো নির্দিষ্ট কলামের মানের ভিত্তিতে ডেটাকে টুকরো টুকরো গ্রুপে ভাগ করা।
+  <br>২. <strong>Apply:</strong> প্রতিটি গ্রুপের ওপর স্বাধীনভাবে কোনো গাণিতিক ফাংশন (Mean, Sum, Count ইত্যাদি) প্রয়োগ করা।
+  <br>৩. <strong>Combine:</strong> সমস্ত গ্রুপের ফলাফল একত্র করে একটি একক ডেটাফ্রেমে উপস্থাপন করা।</p>
+<ul>
+  <li><code>df.groupby('Category')['Sales'].sum()</code>: বেসিক গ্রুপবাই।</li>
+  <li><code>df.groupby('Dept').agg({'Salary': ['mean', 'max'], 'Age': 'min'})</code>: একাধিক কলামে ভিন্ন ভিন্ন ফাংশন চালানো।</li>
+  <li><code>df.groupby('Dept')['Salary'].transform('mean')</code>: অ্যাগ্রিগেশন করার পর মূল ডেটাফ্রেমের সমান দৈর্ঘ্যে মানগুলো ব্রডকাস্ট করে ফেরত দেয় (গ্রুপ সেন্টারিংয়ের জন্য দারুণ)।</li>
+  <li><code>df.groupby('Category').filter(lambda g: len(g) > 10)</code>: ছোট গ্রুপগুলোকে বাদ দেওয়া।</li>
+</ul>
+    </section>
+
+    <!-- ০২ বাস্তব কোড উদাহরণ -->
+    <section>
+        <h2><span class="section-num">০২</span> বাস্তব কোড উদাহরণ (Real-World Code Example)</h2>
+        <div class="code-container">
+            <div class="code-header">
+                <span>pandas_groupby_agg_demo.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code>import pandas as pd
+
+# রিটেইল সেলস ডেটাসেট
+df = pd.DataFrame({
+    'Store': ['Dhaka', 'Dhaka', 'Chittagong', 'Chittagong', 'Sylhet', 'Dhaka'],
+    'Category': ['Electronics', 'Grocery', 'Electronics', 'Grocery', 'Grocery', 'Electronics'],
+    'Revenue': [12000, 3500, 15000, 4200, 2800, 9500],
+    'Discount': [500, 100, 800, 150, 50, 300]
+})
+
+# ১. মাল্টি-লেভেল অ্যাগ্রিগেশন: agg()
+store_summary = df.groupby('Store').agg(
+    Total_Revenue=('Revenue', 'sum'),
+    Avg_Revenue=('Revenue', 'mean'),
+    Max_Discount=('Discount', 'max'),
+    Tx_Count=('Revenue', 'count')
+).round(1)
+
+# ২. transform() দিয়ে গ্রুপ পারসেন্টেজ কন্ট্রিবিউশন
+# প্রতিটি স্টোরের নিজস্ব টোটালের কত পারসেন্ট প্রতিটি ট্রানজেকশন কভার করেছে
+store_totals = df.groupby('Store')['Revenue'].transform('sum')
+df['Store_Revenue_Share'] = ((df['Revenue'] / store_totals) * 100).round(2)
+
+print("--- Original Retail Transactions ---")
+print(df[['Store', 'Category', 'Revenue', 'Store_Revenue_Share']])
+print("\n--- Store-Level Aggregation Summary ---")
+print(store_summary)
+</code></pre>
+        </div>
+
+        <div class="terminal-box">
+            <div class="term-header">
+                <span class="term-title">🖥️ Terminal Output</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Output</button>
+            </div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>--- Original Retail Transactions ---
+        Store     Category  Revenue  Store_Revenue_Share
+0       Dhaka  Electronics    12000                48.00
+1       Dhaka      Grocery     3500                14.00
+2  Chittagong  Electronics    15000                78.12
+3  Chittagong      Grocery     4200                21.88
+4      Sylhet      Grocery     2800               100.00
+5       Dhaka  Electronics     9500                38.00
+
+--- Store-Level Aggregation Summary ---
+            Total_Revenue  Avg_Revenue  Max_Discount  Tx_Count
+Store                                                         
+Chittagong          19200       9600.0           800         2
+Dhaka               25000       8333.3           500         3
+Sylhet               2800       2800.0            50         1</code></pre>
+        </div>
+
+        <div class="breakdown-box">
+            <h4>💡 কোড বিশ্লেষণ ও ব্যাখ্যা (Line-by-Line Breakdown):</h4>
+            <div class="breakdown-item">• <code>agg(Total_Revenue=('Revenue', 'sum'), ...)</code>: আধুনিক Named Aggregation সিনট্যাক্স দিয়ে ক্লিন কলামের নাম তৈরি হয়েছে।</div>
+<div class="breakdown-item">• <code>transform('sum')</code>: মূল ডেটাফ্রেমের প্রতিটি রো-তে সংশ্লিষ্ট স্টোরের মোট রেভিনিউ বসিয়ে শেয়ার পারসেন্টেজ বের করেছে।</div>
+        </div>
+    </section>
+
+    <!-- ০৩ মোবাইল রিডিং টেকঅ্যাওয়ে -->
+    <section>
+        <h2><span class="section-num">০৩</span> মোবাইল রিডিং টেকঅ্যাওয়ে (Key Takeaways)</h2>
+        <div class="takeaway-box">
+            <div class="takeaway-item">
+                <span class="takeaway-title">🌐 রিয়েল-ওয়ার্ল্ড অ্যাপ্লিকেশন (Real-World Application):</span>
+                আঞ্চলিক সেলস পারফরম্যান্স অ্যানালাইসিস এবং গ্রুপভিত্তিক গ্রাহক সেগমেন্টের কেপিআই মেট্রিক্স তৈরি।
+            </div>
+            <div class="takeaway-item">
+                <span class="takeaway-title">🎯 দক্ষতা অর্জন (Skill Gained):</span>
+                Split-Apply-Combine প্যাটার্নে Named Aggregation এবং transform মেথড ব্যবহারের প্রফেশনাল দক্ষতা।
+            </div>
+            <div class="takeaway-item">
+                <span class="takeaway-title">🚀 পরবর্তী পদক্ষেপ (Next Step):</span>
+                পরবর্তী টপিক: ডেটাসেট মার্জ ও কনক্যাটেনেশন—pd.concat, merge ও joins।
+            </div>
+        </div>
+    </section>
+
+    <!-- প্রজেক্ট ড্যাশবোর্ড বাটন -->
+    <section class="project-cta">
+        <h3>🚀 প্রজেক্টের কোড ও ব্রেকডাউন</h3>
+        <p>মোবাইলে সরাসরি কোড, টার্মিনাল রান ও লাইন-বাই-লাইন বাংলা ব্যাখ্যা দেখতে প্রজেক্ট গাইড খুলুন:</p>
+        <a href="./Project/index.html" class="btn-action">📱 প্রজেক্ট কোড ও মোবাইল ব্রেকডাউন →</a>
+    </section>
+</div>
+
+<script>
+function copyBox(btn) {
+    const container = btn.closest('.code-container') || btn.closest('.terminal-box');
+    const codeEl = container ? (container.querySelector('pre') || container.querySelector('code')) : null;
+    const text = codeEl ? codeEl.innerText.trim() : '';
+    
+    function showSuccess() {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✅ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.innerHTML = orig;
+            btn.classList.remove('copied');
+        }, 2000);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showSuccess).catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
+    }
+
+    function fallbackCopy(str) {
+        const ta = document.createElement('textarea');
+        ta.value = str;
+        ta.style.position = 'fixed';
+        ta.style.top = '0';
+        ta.style.left = '0';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try {
+            document.execCommand('copy');
+            showSuccess();
+        } catch(e) {}
+        document.body.removeChild(ta);
+    }
+}
+</script>
+</body>
+</html>

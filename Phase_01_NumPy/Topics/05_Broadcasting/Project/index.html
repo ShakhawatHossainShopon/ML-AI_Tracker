@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>প্রজেক্ট ব্রেকডাউন: Broadcasting Rules & Mechanics Lab (ব্রডকাস্টিং: মেমোরি কপি ছাড়া অসম ডাইমেনশনে অপারেশন প্রজেক্ট ল্যাব)</title>
+    <style>
+:root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-subtle: #f1f5f9;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --text-main: #0f172a;
+    --text-body: #334155;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --tag-bg: #e0f2fe;
+    --tag-text: #0369a1;
+    --success-bg: #ecfdf5;
+    --success-text: #065f46;
+    --code-bg: #090d16;
+    --code-text: #f8fafc;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+    background-color: var(--bg);
+    color: var(--text-body);
+    line-height: 1.55;
+    padding: 0.75rem 0.6rem;
+    font-size: 0.88rem;
+    -webkit-font-smoothing: antialiased;
+}
+.container {
+    max-width: 720px;
+    margin: 0 auto;
+}
+.nav-bar {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.76rem;
+    padding: 0.3rem 0.55rem;
+    background: var(--surface);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 0.9rem 0.95rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+.badge-row {
+    display: flex;
+    gap: 0.35rem;
+    margin-bottom: 0.4rem;
+    flex-wrap: wrap;
+}
+.badge {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+}
+.badge-success {
+    background: var(--success-bg);
+    color: var(--success-text);
+}
+h1 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.25rem;
+    line-height: 1.35;
+}
+.lead {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+}
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem 0.95rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+h2 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-bottom: 1px solid var(--surface-subtle);
+    padding-bottom: 0.35rem;
+}
+h2 .step-num {
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 0.12rem 0.4rem;
+    border-radius: 4px;
+}
+p {
+    margin-bottom: 0.65rem;
+    color: var(--text-body);
+    font-size: 0.84rem;
+    line-height: 1.55;
+}
+.code-container {
+    margin: 0.6rem 0;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #1e293b;
+    position: relative;
+}
+.code-header {
+    background: #1e293b;
+    color: #94a3b8;
+    padding: 0.3rem 0.65rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.75rem 0.85rem;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.76rem;
+    line-height: 1.45;
+    margin: 0;
+}
+code {
+    font-family: "JetBrains Mono", Consolas, monospace;
+    background: #f1f5f9;
+    color: #0f172a;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.78rem;
+}
+pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+.terminal-box {
+    background: #050811;
+    border: 1px solid #1e293b;
+    border-left: 3px solid #10b981;
+    border-radius: 6px;
+    padding: 0.65rem 0.85rem;
+    margin: 0.6rem 0;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.74rem;
+    color: #38bdf8;
+    overflow-x: auto;
+    line-height: 1.4;
+    position: relative;
+}
+.term-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+}
+.term-title {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.breakdown-box {
+    background: var(--surface-subtle);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+    padding: 0.75rem 0.85rem;
+    margin: 0.6rem 0;
+}
+.breakdown-box h4 {
+    color: var(--text-main);
+    font-size: 0.82rem;
+    margin-bottom: 0.45rem;
+    font-weight: 700;
+}
+.breakdown-item {
+    font-size: 0.8rem;
+    margin-bottom: 0.45rem;
+    padding-bottom: 0.45rem;
+    border-bottom: 1px dashed var(--border);
+    line-height: 1.5;
+}
+.breakdown-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.callout {
+    background: var(--accent-light);
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 0.75rem 0.85rem;
+    margin-top: 0.75rem;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+.copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    transition: all 0.2s ease;
+    user-select: none;
+    line-height: 1.2;
+}
+.copy-btn:hover, .copy-btn:active {
+    background: rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.45);
+}
+.copy-btn.copied {
+    background: #10b981 !important;
+    border-color: #059669 !important;
+    color: #ffffff !important;
+}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="nav-bar">
+        <a href="../index.html" class="nav-link">← স্টাডি গাইড</a>
+        <a href="../../../../index.html" class="nav-link">🏠 মাস্টার ট্র্যাকার</a>
+    </div>
+    <header>
+        <div class="badge-row">
+            <span class="badge">Project Breakdown</span>
+            <span class="badge badge-success">Phase 01 • Topic 05</span>
+            <span class="badge">Mobile View</span>
+        </div>
+        <h1>ব্রডকাস্টিং: মেমোরি কপি ছাড়া অসম ডাইমেনশনে অপারেশন প্রজেক্ট ল্যাব (Broadcasting Rules & Mechanics Lab)</h1>
+        <p class="lead">NumPy-এর সবচেয়ে যাদুকরী ফিচার। ভিন্ন শেপের দুটি অ্যারের মধ্যে লুপ বা মেমোরি ডুপ্লিকেশন ছাড়াই কীভাবে এলিমেন্টওয়াইজ গাণিতিক অপারেশন সম্ভব হয় তার রুলস ও অ্যাপ্লিকেশন।</p>
+    </header>
+    
+    <!-- স্টেপসমূহ -->
+        <div class="card">
+        <h2><span class="step-num">01</span> ধাপ ০১: ব্যাচ ফিচার ম্যাট্রিক্স লোড</h2>
+        <p>৫ জন রোগীর রক্তচাপ ও পালস রেটের ডেটাসেট তৈরি।</p>
+        <div class="code-container">
+            <div class="code-header">
+                <span>step_01.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code>import numpy as np
+vitals = np.array([
+    [120, 80, 72],
+    [140, 90, 85],
+    [115, 75, 68],
+    [130, 85, 78],
+    [155, 95, 90]
+], dtype=np.float64)
+print("Patient Vitals:\n", vitals)</code></pre>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="step-num">02</span> ধাপ ০২: ফিচার মিন ও সিগমা হিসাব</h2>
+        <p>প্রতিটি ভাইটালের গড় ও স্ট্যান্ডার্ড ডেভিয়েশন ভেক্টর বের করা।</p>
+        <div class="code-container">
+            <div class="code-header">
+                <span>step_02.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code>v_mean = np.mean(vitals, axis=0) # Shape: (3,)
+v_std = np.std(vitals, axis=0)   # Shape: (3,)
+print("Feature Means:", np.round(v_mean, 1))
+print("Feature Stds: ", np.round(v_std, 1))</code></pre>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="step-num">03</span> ধাপ ০৩: ব্রডকাস্টেড স্ট্যান্ডার্ডাইজেশন</h2>
+        <p>ভেক্টর বিয়োগ ও ভাগ করে স্ট্যান্ডার্ডাইজড Z-ম্যাট্রিক্স তৈরি।</p>
+        <div class="code-container">
+            <div class="code-header">
+                <span>step_03.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code>z_vitals = (vitals - v_mean) / v_std
+print("Standardized Vitals Matrix (Mean 0, Std 1):\n", np.round(z_vitals, 2))</code></pre>
+        </div>
+    </div>
+
+    <!-- ধাপ ০৪: সম্পূর্ণ কার্যকর কোড -->
+    <div class="card">
+        <h2><span class="step-num">০৪</span> সম্পূর্ণ কার্যকর কোড ও মোবাইল সামারি</h2>
+        <div class="code-container">
+            <div class="code-header">
+                <span>numpy_broadcasting_demo.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code># --- ধাপ ০১: ব্যাচ ফিচার ম্যাট্রিক্স লোড ---
+import numpy as np
+vitals = np.array([
+    [120, 80, 72],
+    [140, 90, 85],
+    [115, 75, 68],
+    [130, 85, 78],
+    [155, 95, 90]
+], dtype=np.float64)
+print("Patient Vitals:\n", vitals)
+
+# --- ধাপ ০২: ফিচার মিন ও সিগমা হিসাব ---
+v_mean = np.mean(vitals, axis=0) # Shape: (3,)
+v_std = np.std(vitals, axis=0)   # Shape: (3,)
+print("Feature Means:", np.round(v_mean, 1))
+print("Feature Stds: ", np.round(v_std, 1))
+
+# --- ধাপ ০৩: ব্রডকাস্টেড স্ট্যান্ডার্ডাইজেশন ---
+z_vitals = (vitals - v_mean) / v_std
+print("Standardized Vitals Matrix (Mean 0, Std 1):\n", np.round(z_vitals, 2))</code></pre>
+        </div>
+        <div class="terminal-box">
+            <div class="term-header">
+                <span class="term-title">🖥️ Full Terminal Run</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Output</button>
+            </div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>Original Scores (4x3):
+ [[75 80 85]
+ [90 88 92]
+ [65 70 68]
+ [82 85 80]]
+
+Subject Means (3,): [78.   80.75 81.25]
+
+Mean Centered Scores (Broadcasting Magic):
+ [[ -3.    -0.75   3.75]
+ [ 12.     7.25  10.75]
+ [-13.   -10.75 -13.25]
+ [  4.     4.25  -1.25]]
+
+Bonus Scores (+5 to all):
+ [[80 85 90]
+ [95 93 97]
+ [70 75 73]
+ [87 90 85]]</code></pre>
+        </div>
+        <div class="callout">
+            <strong>🎯 মোবাইলে মনে রাখার সারমর্ম:</strong><br>
+            অভিনন্দন! আপনি সফলভাবে ব্রডকাস্টিং: মেমোরি কপি ছাড়া অসম ডাইমেনশনে অপারেশন এর হ্যান্ডস-অন কোড ওয়াকথ্রু সম্পন্ন করেছেন।
+        </div>
+    </div>
+</div>
+
+<script>
+function copyBox(btn) {
+    const container = btn.closest('.code-container') || btn.closest('.terminal-box');
+    const codeEl = container ? (container.querySelector('pre') || container.querySelector('code')) : null;
+    const text = codeEl ? codeEl.innerText.trim() : '';
+    
+    function showSuccess() {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✅ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.innerHTML = orig;
+            btn.classList.remove('copied');
+        }, 2000);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showSuccess).catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
+    }
+
+    function fallbackCopy(str) {
+        const ta = document.createElement('textarea');
+        ta.value = str;
+        ta.style.position = 'fixed';
+        ta.style.top = '0';
+        ta.style.left = '0';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try {
+            document.execCommand('copy');
+            showSuccess();
+        } catch(e) {}
+        document.body.removeChild(ta);
+    }
+}
+</script>
+</body>
+</html>

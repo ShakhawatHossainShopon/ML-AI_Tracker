@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Date & Time Operations with dt Accessor — তারিখ ও সময় সংক্রান্ত অপারেশন: pd.to_datetime ও dt অ্যাক্সেসর</title>
+    <style>
+:root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-subtle: #f1f5f9;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --text-main: #0f172a;
+    --text-body: #334155;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --tag-bg: #e0f2fe;
+    --tag-text: #0369a1;
+    --success-bg: #ecfdf5;
+    --success-text: #065f46;
+    --code-bg: #090d16;
+    --code-text: #f8fafc;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+    background-color: var(--bg);
+    color: var(--text-body);
+    line-height: 1.6;
+    padding: 0.75rem 0.6rem;
+    font-size: 0.9rem;
+    -webkit-font-smoothing: antialiased;
+}
+.container {
+    max-width: 760px;
+    margin: 0 auto;
+}
+.nav-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+    flex-wrap: wrap;
+}
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.78rem;
+    padding: 0.35rem 0.65rem;
+    background: var(--surface);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 1.1rem 1rem;
+    margin-bottom: 0.85rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+.badge-row {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+.badge {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+}
+.badge-success {
+    background: var(--success-bg);
+    color: var(--success-text);
+}
+h1 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+    line-height: 1.35;
+}
+.lead {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+.card, section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.85rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--surface-subtle);
+    padding-bottom: 0.45rem;
+}
+h2 .section-num {
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+}
+h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0.85rem 0 0.45rem 0;
+}
+p {
+    margin-bottom: 0.75rem;
+    color: var(--text-body);
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+ul, ol {
+    margin-bottom: 0.85rem;
+    padding-left: 1.35rem;
+    color: var(--text-body);
+    font-size: 0.86rem;
+    line-height: 1.6;
+}
+li {
+    margin-bottom: 0.4rem;
+}
+strong {
+    color: var(--text-main);
+    font-weight: 700;
+}
+.code-container {
+    margin: 0.75rem 0;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #1e293b;
+    position: relative;
+}
+.code-header {
+    background: #1e293b;
+    color: #94a3b8;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.85rem 1rem;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    margin: 0;
+}
+code {
+    font-family: "JetBrains Mono", Consolas, monospace;
+    background: #f1f5f9;
+    color: #0f172a;
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+.terminal-box {
+    background: #050811;
+    border: 1px solid #1e293b;
+    border-left: 3px solid #10b981;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    margin: 0.75rem 0;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.76rem;
+    color: #38bdf8;
+    overflow-x: auto;
+    line-height: 1.45;
+    position: relative;
+}
+.term-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+.term-title {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.breakdown-box {
+    background: var(--surface-subtle);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+    padding: 0.85rem 1rem;
+    margin: 0.75rem 0;
+}
+.breakdown-box h4 {
+    color: var(--text-main);
+    font-size: 0.88rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+.breakdown-item {
+    font-size: 0.84rem;
+    margin-bottom: 0.55rem;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px dashed var(--border);
+    line-height: 1.55;
+}
+.breakdown-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.takeaway-box {
+    background: var(--accent-light);
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
+    padding: 1rem 1.15rem;
+    margin: 0.85rem 0;
+}
+.takeaway-item {
+    margin-bottom: 0.75rem;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+.takeaway-item:last-child {
+    margin-bottom: 0;
+}
+.takeaway-title {
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.2rem;
+}
+.project-cta {
+    background: #ffffff;
+    border: 2px dashed var(--accent);
+    border-radius: 8px;
+    padding: 1.25rem 1rem;
+    text-align: center;
+    margin-top: 1rem;
+}
+.project-cta h3 {
+    margin-top: 0;
+    font-size: 1.05rem;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+}
+.project-cta p {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    margin-bottom: 0.85rem;
+}
+.btn-action {
+    display: inline-block;
+    background: var(--accent);
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.86rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    transition: all 0.2s;
+}
+.btn-action:hover {
+    background: #1d4ed8;
+}
+.copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    transition: all 0.2s ease;
+    user-select: none;
+    line-height: 1.2;
+}
+.copy-btn:hover, .copy-btn:active {
+    background: rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.45);
+}
+.copy-btn.copied {
+    background: #10b981 !important;
+    border-color: #059669 !important;
+    color: #ffffff !important;
+}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="nav-bar">
+        <a href="../../index.html" class="nav-link">🏠 মাস্টার সিলেবাস</a>
+        <a href="../../../../index.html" class="nav-link">📋 ট্র্যাকার</a>
+    </div>
+    <header>
+        <div class="badge-row">
+            <span class="badge">Phase 02 • Topic 11</span>
+            <span class="badge badge-success">Mobile View</span>
+        </div>
+        <h1>Date & Time Operations with dt Accessor — তারিখ ও সময় সংক্রান্ত অপারেশন: pd.to_datetime ও dt অ্যাক্সেসর</h1>
+        <p class="lead">টাইম-সিরিজ ফিচারের ভিত্তিপ্রস্তর। স্ট্রিং থেকে টাইমস্ট্যাম্প কনভার্সন (pd.to_datetime), dt অ্যাক্সেসর দিয়ে year, month, day, dayofweek, is_weekend এক্সট্রাকশন এবং টাইম ডেল্টা ক্যালকুলেশন।</p>
+    </header>
+    
+    <!-- ০১ থিওরি ও মূল কনসেপ্ট -->
+    <section>
+        <h2><span class="section-num">০১</span> থিওরি ও মূল কনসেপ্ট (Theory & Core Concepts)</h2>
+        <h3>তারিখ পার্সিং ও ক্যালেন্ডার ফিচার ইঞ্জিনিয়ারিং</h3>
+        <p>বাস্তব জগতে ডেট ও টাইম বেশিরভাগ সময় এলোমেলো স্ট্রিং ফরম্যাটে থাকে (যেমন: '12/05/2026' বা '2026-05-12 14:30:00')।</p>
+<ul>
+  <li><strong>১. পার্সিং: <code>pd.to_datetime(series, format=..., errors='coerce')</code></strong>
+    <br>যেকোনো স্ট্রিংকে স্ট্যান্ডার্ড <code>datetime64[ns]</code> অবজেক্টে রূপান্তর করে। <code>errors='coerce'</code> দিলে অবৈধ ডেট ফরম্যাট এরর না দিয়ে <code>NaT</code> (Not a Time) হিসেবে হ্যান্ডেল করে।</li>
+  <li><strong>২. <code>dt</code> অ্যাক্সেসর (Feature Extraction):</strong>
+    <br><code>df['Date'].dt.year</code>: বছর।
+    <br><code>df['Date'].dt.month_name()</code>: মাসের নাম (January, February)।
+    <br><code>df['Date'].dt.day_name()</code>: বারের নাম (Friday, Saturday)।
+    <br><code>df['Date'].dt.dayofweek</code>: সপ্তাহের দিনের ইনডেক্স (0=Monday, 6=Sunday)।
+    <br><code>df['Date'].dt.is_month_end</code>: মাসের শেষ দিন কি না।</li>
+  <li><strong>৩. Timedelta (সময়ের ব্যবধান):</strong>
+    <br>দুটি তারিখ বিয়োগ করলে <code>Timedelta</code> পাওয়া যায়: <code>df['End'] - df['Start']</code>।</li>
+</ul>
+    </section>
+
+    <!-- ০২ বাস্তব কোড উদাহরণ -->
+    <section>
+        <h2><span class="section-num">০২</span> বাস্তব কোড উদাহরণ (Real-World Code Example)</h2>
+        <div class="code-container">
+            <div class="code-header">
+                <span>pandas_datetime_features.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code>import pandas as pd
+
+# ই-কমার্স অর্ডার লগ
+df = pd.DataFrame({
+    'Order_ID': ['O1', 'O2', 'O3', 'O4'],
+    'Order_Time': ['2026-03-01 09:15:00', '2026-03-06 18:30:00', '2026-03-15 22:45:00', '2026-03-22 14:00:00'],
+    'Delivery_Time': ['2026-03-03 14:00:00', '2026-03-08 11:20:00', '2026-03-18 16:10:00', '2026-03-25 18:00:00']
+})
+
+# ১. pd.to_datetime কনভার্সন
+df['Order_Time'] = pd.to_datetime(df['Order_Time'])
+df['Delivery_Time'] = pd.to_datetime(df['Delivery_Time'])
+
+# ২. dt অ্যাক্সেসর দিয়ে ফিচার ইঞ্জিনিয়ারিং
+df['Order_Day'] = df['Order_Time'].dt.day_name()
+df['Order_Hour'] = df['Order_Time'].dt.hour
+df['Is_Weekend'] = df['Order_Time'].dt.dayofweek.isin([4, 5]) # শুক্র ও শনিবার
+
+# ৩. ডেলিভারি সম্পন্ন হতে কতদিন লেগেছে (Timedelta)
+df['Delivery_Days'] = (df['Delivery_Time'] - df['Order_Time']).dt.total_seconds() / (24 * 3600)
+
+print("--- Engineered Datetime Features ---")
+print(df[['Order_ID', 'Order_Time', 'Order_Day', 'Order_Hour', 'Is_Weekend', 'Delivery_Days']].round(2))
+</code></pre>
+        </div>
+
+        <div class="terminal-box">
+            <div class="term-header">
+                <span class="term-title">🖥️ Terminal Output</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Output</button>
+            </div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>--- Engineered Datetime Features ---
+  Order_ID          Order_Time Order_Day  Order_Hour  Is_Weekend  Delivery_Days
+0       O1 2026-03-01 09:15:00    Sunday           9       False           2.20
+1       O2 2026-03-06 18:30:00    Friday          18        True           1.70
+2       O3 2026-03-15 22:45:00    Sunday          22       False           2.73
+3       O4 2026-03-22 14:00:00    Sunday          14       False           3.17</code></pre>
+        </div>
+
+        <div class="breakdown-box">
+            <h4>💡 কোড বিশ্লেষণ ও ব্যাখ্যা (Line-by-Line Breakdown):</h4>
+            <div class="breakdown-item">• <code>dt.day_name()</code>: সংখ্যা থেকে মানুষের পড়ার উপযোগী দিন বের করেছে।</div>
+<div class="breakdown-item">• <code>dt.total_seconds() / 86400</code>: নিখুঁত ফ্লোটিং পয়েন্ট ডেলিভারি কার্যদিবস হিসাব করেছে।</div>
+        </div>
+    </section>
+
+    <!-- ০৩ মোবাইল রিডিং টেকঅ্যাওয়ে -->
+    <section>
+        <h2><span class="section-num">০৩</span> মোবাইল রিডিং টেকঅ্যাওয়ে (Key Takeaways)</h2>
+        <div class="takeaway-box">
+            <div class="takeaway-item">
+                <span class="takeaway-title">🌐 রিয়েল-ওয়ার্ল্ড অ্যাপ্লিকেশন (Real-World Application):</span>
+                রিটেইল ও রাইড-শেয়ারিং অ্যাপে পিক-আওয়ার প্রেডিকশন এবং উইকএন্ড সেলস বিহেভিয়ার মডেলিং।
+            </div>
+            <div class="takeaway-item">
+                <span class="takeaway-title">🎯 দক্ষতা অর্জন (Skill Gained):</span>
+                স্ট্রিং ডেট পার্সিং এবং dt অ্যাক্সেসর দিয়ে মেশিন লার্নিং ফিচার এক্সট্র্যাক্ট করার কোডিং দক্ষতা।
+            </div>
+            <div class="takeaway-item">
+                <span class="takeaway-title">🚀 পরবর্তী পদক্ষেপ (Next Step):</span>
+                পরবর্তী টপিক: টাইম-সিরিজ ম্যানিপুলেশন—DatetimeIndex, resample, rolling ও shift।
+            </div>
+        </div>
+    </section>
+
+    <!-- প্রজেক্ট ড্যাশবোর্ড বাটন -->
+    <section class="project-cta">
+        <h3>🚀 প্রজেক্টের কোড ও ব্রেকডাউন</h3>
+        <p>মোবাইলে সরাসরি কোড, টার্মিনাল রান ও লাইন-বাই-লাইন বাংলা ব্যাখ্যা দেখতে প্রজেক্ট গাইড খুলুন:</p>
+        <a href="./Project/index.html" class="btn-action">📱 প্রজেক্ট কোড ও মোবাইল ব্রেকডাউন →</a>
+    </section>
+</div>
+
+<script>
+function copyBox(btn) {
+    const container = btn.closest('.code-container') || btn.closest('.terminal-box');
+    const codeEl = container ? (container.querySelector('pre') || container.querySelector('code')) : null;
+    const text = codeEl ? codeEl.innerText.trim() : '';
+    
+    function showSuccess() {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✅ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.innerHTML = orig;
+            btn.classList.remove('copied');
+        }, 2000);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showSuccess).catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
+    }
+
+    function fallbackCopy(str) {
+        const ta = document.createElement('textarea');
+        ta.value = str;
+        ta.style.position = 'fixed';
+        ta.style.top = '0';
+        ta.style.left = '0';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try {
+            document.execCommand('copy');
+            showSuccess();
+        } catch(e) {}
+        document.body.removeChild(ta);
+    }
+}
+</script>
+</body>
+</html>

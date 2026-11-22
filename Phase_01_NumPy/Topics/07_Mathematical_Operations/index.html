@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Universal Functions (ufuncs) & Math — সার্বজনীন গণিত ফাংশন: ufuncs, exp, log ও clip</title>
+    <style>
+:root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-subtle: #f1f5f9;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --text-main: #0f172a;
+    --text-body: #334155;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --tag-bg: #e0f2fe;
+    --tag-text: #0369a1;
+    --success-bg: #ecfdf5;
+    --success-text: #065f46;
+    --code-bg: #090d16;
+    --code-text: #f8fafc;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+    background-color: var(--bg);
+    color: var(--text-body);
+    line-height: 1.6;
+    padding: 0.75rem 0.6rem;
+    font-size: 0.9rem;
+    -webkit-font-smoothing: antialiased;
+}
+.container {
+    max-width: 760px;
+    margin: 0 auto;
+}
+.nav-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+    flex-wrap: wrap;
+}
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.78rem;
+    padding: 0.35rem 0.65rem;
+    background: var(--surface);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 1.1rem 1rem;
+    margin-bottom: 0.85rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+.badge-row {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+.badge {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+}
+.badge-success {
+    background: var(--success-bg);
+    color: var(--success-text);
+}
+h1 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+    line-height: 1.35;
+}
+.lead {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+.card, section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.85rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--surface-subtle);
+    padding-bottom: 0.45rem;
+}
+h2 .section-num {
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+}
+h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0.85rem 0 0.45rem 0;
+}
+p {
+    margin-bottom: 0.75rem;
+    color: var(--text-body);
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+ul, ol {
+    margin-bottom: 0.85rem;
+    padding-left: 1.35rem;
+    color: var(--text-body);
+    font-size: 0.86rem;
+    line-height: 1.6;
+}
+li {
+    margin-bottom: 0.4rem;
+}
+strong {
+    color: var(--text-main);
+    font-weight: 700;
+}
+.code-container {
+    margin: 0.75rem 0;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #1e293b;
+    position: relative;
+}
+.code-header {
+    background: #1e293b;
+    color: #94a3b8;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.85rem 1rem;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    margin: 0;
+}
+code {
+    font-family: "JetBrains Mono", Consolas, monospace;
+    background: #f1f5f9;
+    color: #0f172a;
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+.terminal-box {
+    background: #050811;
+    border: 1px solid #1e293b;
+    border-left: 3px solid #10b981;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    margin: 0.75rem 0;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.76rem;
+    color: #38bdf8;
+    overflow-x: auto;
+    line-height: 1.45;
+    position: relative;
+}
+.term-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+.term-title {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.breakdown-box {
+    background: var(--surface-subtle);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+    padding: 0.85rem 1rem;
+    margin: 0.75rem 0;
+}
+.breakdown-box h4 {
+    color: var(--text-main);
+    font-size: 0.88rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+.breakdown-item {
+    font-size: 0.84rem;
+    margin-bottom: 0.55rem;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px dashed var(--border);
+    line-height: 1.55;
+}
+.breakdown-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.takeaway-box {
+    background: var(--accent-light);
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
+    padding: 1rem 1.15rem;
+    margin: 0.85rem 0;
+}
+.takeaway-item {
+    margin-bottom: 0.75rem;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+.takeaway-item:last-child {
+    margin-bottom: 0;
+}
+.takeaway-title {
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.2rem;
+}
+.project-cta {
+    background: #ffffff;
+    border: 2px dashed var(--accent);
+    border-radius: 8px;
+    padding: 1.25rem 1rem;
+    text-align: center;
+    margin-top: 1rem;
+}
+.project-cta h3 {
+    margin-top: 0;
+    font-size: 1.05rem;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+}
+.project-cta p {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    margin-bottom: 0.85rem;
+}
+.btn-action {
+    display: inline-block;
+    background: var(--accent);
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.86rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    transition: all 0.2s;
+}
+.btn-action:hover {
+    background: #1d4ed8;
+}
+.copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    transition: all 0.2s ease;
+    user-select: none;
+    line-height: 1.2;
+}
+.copy-btn:hover, .copy-btn:active {
+    background: rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.45);
+}
+.copy-btn.copied {
+    background: #10b981 !important;
+    border-color: #059669 !important;
+    color: #ffffff !important;
+}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="nav-bar">
+        <a href="../../index.html" class="nav-link">🏠 মাস্টার সিলেবাস</a>
+        <a href="../../../../index.html" class="nav-link">📋 ট্র্যাকার</a>
+    </div>
+    <header>
+        <div class="badge-row">
+            <span class="badge">Phase 01 • Topic 07</span>
+            <span class="badge badge-success">Mobile View</span>
+        </div>
+        <h1>Universal Functions (ufuncs) & Math — সার্বজনীন গণিত ফাংশন: ufuncs, exp, log ও clip</h1>
+        <p class="lead">মেশিন লার্নিং অ্যাক্টিভেশন ও লস ক্যালকুলেশনে ব্যবহৃত ফাস্ট ম্যাথমেটিক্যাল ফাংশন। np.exp, np.log, np.sqrt, np.clip এবং নিউমেরিক্যাল স্টেবিলিটি টেকনিক।</p>
+    </header>
+    
+    <!-- ০১ থিওরি ও মূল কনসেপ্ট -->
+    <section>
+        <h2><span class="section-num">০১</span> থিওরি ও মূল কনসেপ্ট (Theory & Core Concepts)</h2>
+        <h3>Universal Functions (ufuncs) আর্কিটেকচার</h3>
+        <p>NumPy এর <strong>ufunc</strong> (Universal Function) হলো এমন ফাংশন যা অ্যারের প্রতিটি উপাদানের ওপর স্বয়ংক্রিয়ভাবে পয়েন্টওয়াইজ (Element-by-element) প্রয়োগ হয়।</p>
+<ul>
+  <li><code>np.exp(x)</code>: প্রতিটি উপাদানের সূচকীয় মান \(e^x\) বের করে (Softmax ও Sigmoid তৈরিতে ব্যবহৃত)।</li>
+  <li><code>np.log(x)</code>: স্বাভাবিক লগারিদম \(\ln(x)\) (Cross-Entropy লস ক্যালকুলেশনে ব্যবহৃত)।</li>
+  <li><code>np.clip(arr, min_val, max_val)</code>: অ্যারের মানগুলোকে নির্দিষ্ট একটি সীমার মধ্যে আটকে রাখে। গ্রেডিয়েন্ট এক্সপ্লোশন বা <code>log(0)</code> এর মতো নিউমেরিক্যাল অস্থিতিশীলতা রোধে এটি অপরিহার্য।</li>
+  <li><code>np.abs()</code>, <code>np.sqrt()</code>, <code>np.power()</code>: মৌলিক গাণিতিক রূপান্তর।</li>
+</ul>
+    </section>
+
+    <!-- ০২ বাস্তব কোড উদাহরণ -->
+    <section>
+        <h2><span class="section-num">০২</span> বাস্তব কোড উদাহরণ (Real-World Code Example)</h2>
+        <div class="code-container">
+            <div class="code-header">
+                <span>numpy_ufuncs_math.py</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Code</button>
+            </div>
+<pre><code>import numpy as np
+
+# ১. মডেলের র' লজিট (Logits)
+logits = np.array([-2.5, 0.0, 1.2, 3.5, 12.0])
+
+# ২. নিউমেরিক্যালি স্টেবল সিগময়েড অ্যাক্টিভেশন
+# Sigmoid(z) = 1 / (1 + exp(-z))
+# এক্সট্রিম ভ্যালুর জন্য ক্লিপিং
+clipped_logits = np.clip(logits, -10.0, 10.0)
+sigmoid_probs = 1.0 / (1.0 + np.exp(-clipped_logits))
+
+# ৩. বাইনারি ক্রস-এন্ট্রপি লস প্রিপারেশন: log(prob)
+# log(0) যেন -inf না দেয় সেজন্য এপসিলন যোগ
+eps = 1e-7
+safe_probs = np.clip(sigmoid_probs, eps, 1.0 - eps)
+log_loss_terms = np.log(safe_probs)
+
+print("Original Raw Logits:  ", logits)
+print("Clipped Safe Logits:  ", clipped_logits)
+print("Sigmoid Probabilities:", np.round(sigmoid_probs, 4))
+print("Safe Log Probabilities:", np.round(log_loss_terms, 4))
+</code></pre>
+        </div>
+
+        <div class="terminal-box">
+            <div class="term-header">
+                <span class="term-title">🖥️ Terminal Output</span>
+                <button class="copy-btn" onclick="copyBox(this)" type="button">📋 Copy Output</button>
+            </div>
+<pre style="background:transparent; padding:0; color:#38bdf8;"><code>Original Raw Logits:   [-2.5   0.    1.2   3.5  12. ]
+Clipped Safe Logits:   [-2.5   0.    1.2   3.5  10. ]
+Sigmoid Probabilities: [0.0759 0.5    0.7685 0.9707 0.9999]
+Safe Log Probabilities: [-2.5786 -0.6931 -0.2633 -0.0297 -0.0001]</code></pre>
+        </div>
+
+        <div class="breakdown-box">
+            <h4>💡 কোড বিশ্লেষণ ও ব্যাখ্যা (Line-by-Line Breakdown):</h4>
+            <div class="breakdown-item">• <code>np.clip(logits, -10.0, 10.0)</code>: ১২.০ মানটিকে ১০.০ এ ক্ল্যাম্প করে সূচকীয় ওভারফ্লো ঠেকানো হয়েছে।</div>
+<div class="breakdown-item">• <code>1.0 / (1.0 + np.exp(-z))</code>: সম্পূর্ণ সিগময়েড ফাংশনটি ভেক্টরাইজড ufunc দিয়ে এক লাইনে ক্যালকুলেট হয়েছে।</div>
+        </div>
+    </section>
+
+    <!-- ০৩ মোবাইল রিডিং টেকঅ্যাওয়ে -->
+    <section>
+        <h2><span class="section-num">০৩</span> মোবাইল রিডিং টেকঅ্যাওয়ে (Key Takeaways)</h2>
+        <div class="takeaway-box">
+            <div class="takeaway-item">
+                <span class="takeaway-title">🌐 রিয়েল-ওয়ার্ল্ড অ্যাপ্লিকেশন (Real-World Application):</span>
+                লজিস্টিক রিগ্রেশন ও ডিপ নিউরাল নেটওয়ার্কে কাস্টম অ্যাক্টিভেশন ও ক্রস-এন্ট্রপি লস ফাংশন নিউমেরিক্যালি স্টেবল রাখা।
+            </div>
+            <div class="takeaway-item">
+                <span class="takeaway-title">🎯 দক্ষতা অর্জন (Skill Gained):</span>
+                ufuncs ও ক্লিপিং কৌশল প্রয়োগ করে গাণিতিক ফাংশনে NaN বা inf এরর প্রতিরোধ করার দক্ষতা।
+            </div>
+            <div class="takeaway-item">
+                <span class="takeaway-title">🚀 পরবর্তী পদক্ষেপ (Next Step):</span>
+                পরবর্তী টপিক: অ্যাগ্রিগেশন ও রিডাকশন—sum, mean, std ও argmax (axis=0 vs axis=1)।
+            </div>
+        </div>
+    </section>
+
+    <!-- প্রজেক্ট ড্যাশবোর্ড বাটন -->
+    <section class="project-cta">
+        <h3>🚀 প্রজেক্টের কোড ও ব্রেকডাউন</h3>
+        <p>মোবাইলে সরাসরি কোড, টার্মিনাল রান ও লাইন-বাই-লাইন বাংলা ব্যাখ্যা দেখতে প্রজেক্ট গাইড খুলুন:</p>
+        <a href="./Project/index.html" class="btn-action">📱 প্রজেক্ট কোড ও মোবাইল ব্রেকডাউন →</a>
+    </section>
+</div>
+
+<script>
+function copyBox(btn) {
+    const container = btn.closest('.code-container') || btn.closest('.terminal-box');
+    const codeEl = container ? (container.querySelector('pre') || container.querySelector('code')) : null;
+    const text = codeEl ? codeEl.innerText.trim() : '';
+    
+    function showSuccess() {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✅ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.innerHTML = orig;
+            btn.classList.remove('copied');
+        }, 2000);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showSuccess).catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
+    }
+
+    function fallbackCopy(str) {
+        const ta = document.createElement('textarea');
+        ta.value = str;
+        ta.style.position = 'fixed';
+        ta.style.top = '0';
+        ta.style.left = '0';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try {
+            document.execCommand('copy');
+            showSuccess();
+        } catch(e) {}
+        document.body.removeChild(ta);
+    }
+}
+</script>
+</body>
+</html>
